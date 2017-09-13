@@ -1,0 +1,32 @@
+{
+  "name": "tasksmaster",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "firebase": "^4.1.2",
+    "history": "^4.7.2",
+    "octicons": "^6.0.1",
+    "react": "^15.6.1",
+    "react-addons-css-transition-group": "^15.6.0",
+    "react-addons-transition-group": "^15.6.0",
+    "react-dom": "^15.6.1",
+    "react-dropzone": "^4.1.2",
+    "react-redux": "^5.0.5",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.6",
+    "reactstrap": "^4.8.0",
+    "redux": "^3.6.0",
+    "superagent": "^3.6.0"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.7"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:8000"
+}

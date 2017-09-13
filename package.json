@@ -4,16 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.4",
-    "multer": "^1.3.0"
-  },
-  "scripts": {
-    "start": "node index.js"
+    "express-fileupload": "^0.2.0",
+    "multer": "^1.3.0",
+    "superagent": "^3.6.0"
   }
 }
