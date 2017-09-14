@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
-import { Button, FormGroup, Input } from 'reactstrap';
+import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { goalRef } from '../firebase';
 const request = require('superagent');
 
@@ -12,31 +12,67 @@ class Task extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      modal1: false,
+      modal2: false,
+      title: '',
       description: '',
       files: []
     }
+
+    this.toggleTitle = this.toggleTitle.bind(this);
+    this.toggleDescr = this.toggleDescr.bind(this);
+    this.editDescription = this.editDescription.bind(this);
   }
 
   componentDidMount() {
     goalRef.on('value', snap => {
       snap.forEach(goal => {
-        const { description, attached } = goal.val();
+        const { title, description, attached } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.task.serverKey) {
-          this.setState({ description: description, attached: attached });
+          this.setState({ title: title, description: description, attached: attached });
         }
       })
     })
   }
 
+  toggleTitle() {
+    this.setState({
+      modal1: !this.state.modal1
+    });
+  }
+
+  toggleDescr() {
+    this.setState({
+      modal2: !this.state.modal2
+    });
+  }
+
+  editTitle() {
+    const { serverKey } = this.props.task;
+    goalRef.child(serverKey).update({title: this.state.title});
+    this.setState({
+      modal1: !this.state.modal1
+    });
+  }
+
   editDescription() {
     const { serverKey } = this.props.task;
-    goalRef.child(serverKey).update({description: this.state.description});
-    this.refs.descriptionInput.value = '';
+    if (this.refs.descriptionInput) {
+      goalRef.child(serverKey).update({description: this.state.description});
+      console.log('what', this.state.description);
+    }
+    this.setState({
+      modal2: !this.state.modal2
+    });
+  }
+
+  deleteFile() {
+    console.log(this.parentNode);
   }
 
   onDrop(acceptedFiles) {
-    const { serverKey } = this.props.task;
+    const { serverKey, attached } = this.props.task;
     this.setState({
       files: acceptedFiles
     });
@@ -51,17 +87,25 @@ class Task extends Component {
         if (err) { console.error(err); }
         return resp;
       });
-    // const attachedFiles = JSON.stringify(this.state.files[0].name);
-    // console.log('attachedFiles', attachedFiles);
-    // goalRef.child(serverKey).update({attached: this.state.files[0]});
+    let g = [];
+    if (attached) {
+      attached.split(",").map((file, index) => {
+        return (
+          g = [...g, file]
+        )
+      })
+    }
+    acceptedFiles.map(f => {
+      return g = [...g, f.name];
+    });
+    console.log('g', g);
+    goalRef.child(serverKey).update({attached: g.toString()});
   }
 
   render() {
-    console.log('files', this.state.files);
     const { name, email } = this.props.user;
     const { title, description, attached } = this.props.task;
     // console.log('task', this.props.task.title);
-    // console.log('attached', this.state.attached);
     return(
       <div style={{margin: '5px'}}>
         <Link to={'/app'}><i className="fa fa-angle-double-left"></i> Back</Link>
@@ -69,7 +113,18 @@ class Task extends Component {
           Task for <span><em>{ name }</em></span><span> ({ email })</span>
         </h4>
         <div>
-          <div><strong>Task:</strong></div>
+          <div>
+            <strong>Task:</strong>
+            <Button
+              outline
+              className="fa fa-pencil"
+              color="secondary"
+              size="sm"
+              style={{marginLeft: '5px'}}
+              onClick={this.toggleTitle}
+              >
+              </Button>
+          </div>
           <div>{ title }</div>
         </div>
         <FormGroup>
@@ -82,22 +137,13 @@ class Task extends Component {
               color="secondary"
               size="sm"
               style={{marginLeft: '5px'}}
-              onClick={this.toggle}
+              onClick={this.toggleDescr}
             >
             </Button>
           </div>
           <div><pre>{ description }</pre></div>
-          <Input
-            style={{marginBottom: '5px'}}
-            type="textarea"
-            placeholder="Enter a description"
-            name="text"
-            rows="5"
-            ref="descriptionInput"
-            value= { this.state.description }
-            onChange={event => this.setState({description: event.target.value})}
-          />
-          <Button color="primary" onClick={()=> this.editDescription()}>Update</Button>
+
+
         </FormGroup>
         <div>
           <strong>Attached files: </strong>
@@ -106,8 +152,16 @@ class Task extends Component {
               attached ?
                 attached.split(",").map((file, index) => {
                   return (
-                    <div key={index}>
-                      <a href={__dirname + '/uploads/' + file} download>{file}</a>
+                    <div key={index} style={{marginBottom: '5px'}}>
+                      <a href={__dirname + '/client/uploads/' + file} download>{file}</a>
+                      <Button
+                        className="fa fa-times"
+                        color="danger"
+                        size="sm"
+                        style={{marginLeft: '5px'}}
+                        onClick={this.deleteFile}
+                      >
+                      </Button>
                     </div>
                   )
                 }) : 'No attached files'
@@ -129,6 +183,45 @@ class Task extends Component {
             </ul>
           </aside>
         </section>
+        <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
+          <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>
+          <ModalBody>
+            <label>Change title of the task</label>
+            <input
+              type="text"
+              placeholder="Edit a task"
+              className="form-control"
+              style={{marginRight: '5px'}}
+              ref="editInput"
+              value= { this.state.title }
+              onChange={event => this.setState({title: event.target.value})}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={()=> this.editTitle()}>Update</Button>{' '}
+            <Button color="secondary" onClick={this.toggleTitle}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+        <Modal isOpen={this.state.modal2} toggle={this.toggleDescr} className={this.props.className}>
+          <ModalHeader toggle={this.toggleDescr}>Change task description</ModalHeader>
+          <ModalBody>
+            <label>Change description of the task</label>
+            <Input
+              style={{marginRight: '5px'}}
+              type="textarea"
+              placeholder="Enter a description"
+              name="text"
+              rows="5"
+              ref="descriptionInput"
+              value= {this.state.description}
+              onChange={event => this.setState({description: event.target.value})}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={()=> this.editDescription()}>Update</Button>{' '}
+            <Button color="secondary" onClick={this.toggleDescr}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
       </div>
     )
   }
@@ -145,4 +238,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(Task);
+export default connect(mapStateToProps, null)(Task);

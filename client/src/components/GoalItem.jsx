@@ -16,6 +16,18 @@ class GoalItem extends Component {
     this.toggle = this.toggle.bind(this);
   }
 
+  componentDidMount() {
+    goalRef.on('value', snap => {
+      snap.forEach(goal => {
+        const { title } = goal.val();
+        const serverKey = goal.key;
+        if (serverKey === this.props.goal.serverKey) {
+          this.setState({ title: title });
+        }
+      })
+    })
+  }
+
   toggle() {
     this.setState({
       modal: !this.state.modal
@@ -47,7 +59,7 @@ class GoalItem extends Component {
     const { creator, title, serverKey } = this.props.goal;
     return (
       <div style={{margin: '5px'}}>
-        <Link to={`/tracks/${serverKey}`}><strong>{title}</strong></Link>
+        <Link to={`/tasks/${serverKey}`}><strong>{title}</strong></Link>
         <span style={{marginRight: '5px'}}> submitted by <em>{creator}</em></span>
         <button style={{marginLeft: '5px'}}
           className="btn btn-sm btn-outline-primary"
@@ -72,14 +84,14 @@ class GoalItem extends Component {
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Change task title</ModalHeader>
           <ModalBody>
-            <label>{title}</label>
+            <label>Change title of task</label>
             <input
               type="text"
               placeholder="Edit a task"
               className="form-control"
               style={{marginRight: '5px'}}
               ref="editInput"
-              // value={title}
+              value= { this.state.title }
               onChange={event => this.setState({title: event.target.value})}
             />
           </ModalBody>

@@ -62,7 +62,7 @@ ReactDOM.render(
         <Route exact path="/app" component={App} />
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
-        <Route path="/tracks/:id" component={Task} />
+        <Route path="/tasks/:id" component={Task} />
       </div>
     </ConnectedRouter>
   </Provider>, document.getElementById('root')

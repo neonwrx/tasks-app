@@ -1,16 +1,15 @@
 const express = require('express');
-var app = express();
-var upload = require('express-fileupload');
+const upload = require('express-fileupload');
 const http = require('http');
-http.Server(app).listen(8000); // make server listen on port 8000
+
+const app = express();
+const port = process.env.PORT || 8000;
+http.Server(app).listen(port);
 
 app.use(upload()); // configure middleware
 
-console.log("Server Started at port 8000");
+console.log("Server Started at port ", port);
 
-// app.get('/',function(req,res){
-//   res.sendFile(__dirname+'/index.html');
-// })
 app.use(express.static(__dirname + '/client/build'));
 app.set('views', './build');
 app.use("/node_modules", express.static(__dirname + '/client/node_modules'));
