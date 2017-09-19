@@ -9,6 +9,7 @@ class GoalItem extends Component {
     super(props);
     this.state = {
       buttonName: 'Add for me',
+      disabled: false,
       modal: false,
       title: ''
     }
@@ -37,7 +38,7 @@ class GoalItem extends Component {
   setTask() {
     const { email } = this.props.user;
     const { serverKey } = this.props.goal;
-    this.setState({buttonName: 'Added'});
+    this.setState({buttonName: 'Added', disabled: true});
     goalRef.child(serverKey).update({assigned: email});
   }
 
@@ -63,6 +64,7 @@ class GoalItem extends Component {
         <span style={{marginRight: '5px'}}> submitted by <em>{creator}</em></span>
         <button style={{marginLeft: '5px'}}
           className="btn btn-sm btn-outline-primary"
+          disabled={this.state.disabled}
           onClick={()=> this.setTask()}
         >
           { this.state.buttonName }

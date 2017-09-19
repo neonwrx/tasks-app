@@ -14,10 +14,16 @@ app.use(express.static(__dirname + '/client/build'));
 app.set('views', './build');
 app.use("/node_modules", express.static(__dirname + '/client/node_modules'));
 app.use("/uploads", express.static(__dirname + '/client/uploads'));
-app.get('/', function (req, res) {
+// app.get('*', function(req, res) {
+//   var file = __dirname + '/client/uploads/' + '2.jpg';
+//   console.log('trololo', file);
+//   // console.log('trololo2', req.name);
+//   // res.download(__dirname + '/client/uploads/1.jpg');
+// });
+app.get('*', function (req, res) {
   res.sendFile(`${process.cwd()}/client/build/index.html`)
 });
-app.post('/',function(req,res){
+app.post('/', function(req,res){
   console.log(req.files);
   if(req.files){
     var obj = req.files;

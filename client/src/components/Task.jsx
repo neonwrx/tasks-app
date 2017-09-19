@@ -67,8 +67,30 @@ class Task extends Component {
     });
   }
 
-  deleteFile() {
-    console.log(this.parentNode);
+  deleteFile(file) {
+    const { serverKey, attached } = this.props.task;
+    console.log('Delete this file', file);
+    let g = [];
+    if (attached) {
+      attached.split(",").map((file, index) => {
+        return (
+          g = [...g, file]
+        )
+      })
+    }
+    function removeA(arr) {
+      var what, a = arguments, L = a.length, ax;
+      while (L > 1 && arr.length) {
+        what = a[--L];
+        while ((ax= arr.indexOf(what)) !== -1) {
+          arr.splice(ax, 1);
+        }
+      }
+      return arr;
+    }
+    removeA(g, file);
+    console.log('g', g);
+    goalRef.child(serverKey).update({attached: g.toString()});
   }
 
   onDrop(acceptedFiles) {
@@ -153,13 +175,13 @@ class Task extends Component {
                 attached.split(",").map((file, index) => {
                   return (
                     <div key={index} style={{marginBottom: '5px'}}>
-                      <a href={__dirname + '/client/uploads/' + file} download>{file}</a>
+                      <a href={'/uploads/' + file} download>{file}</a>
                       <Button
                         className="fa fa-times"
                         color="danger"
                         size="sm"
                         style={{marginLeft: '5px'}}
-                        onClick={this.deleteFile}
+                        onClick={this.deleteFile.bind(this, file)}
                       >
                       </Button>
                     </div>
