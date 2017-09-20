@@ -5,7 +5,7 @@ import Header from './Header';
 import AddGoal from './AddGoal';
 import GoalList from './GoalList';
 import CompleteGoalList from './CompleteGoalList';
-import TasksList from './TasksList';
+// import TasksList from './TasksList';
 
 class App extends Component {
   signOut() {
@@ -16,23 +16,23 @@ class App extends Component {
     return (
       <div style={{margin: '5px'}}>
         <Header />
-        <h3>Tasks Master</h3>
+        {/* <h3>Tasks Master</h3> */}
         <AddGoal />
         <hr />
         <h4>Tasks</h4>
         <GoalList />
         <hr />
-        <TasksList />
-        <hr />
+        {/* <TasksList />
+        <hr /> */}
         <h4>Complete Tasks</h4>
-          <CompleteGoalList />
-          <hr />
+        <CompleteGoalList />
+        <hr />
         <button
           className="btn btn-danger"
           onClick={() => this.signOut()}
-          >
+        >
             Sign Out
-          </button>
+        </button>
       </div>
     )
   }

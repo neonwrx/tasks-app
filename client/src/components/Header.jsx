@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 class Header extends Component {
   constructor(props) {
@@ -19,20 +20,21 @@ class Header extends Component {
 
   render() {
     return (
-      <div>
-        <Navbar color="faded" light toggleable>
-          <NavbarToggler right onClick={this.toggle} />
+      <div style={{marginBottom: '5px'}}>
+        <Navbar color="faded" className="navbar-dark bg-dark">
           <NavbarBrand href="/">Tasks Master</NavbarBrand>
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink href="/components/">Components</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="https://github.com/reactstrap/reactstrap">Github</NavLink>
-              </NavItem>
-            </Nav>
-          </Collapse>
+          <Nav pills>
+            <NavItem>
+              <NavLink href="#" active>Tasks</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="#"><Link to={'/taskslist'}>My Tasks</Link></NavLink>
+
+            </NavItem>
+            <NavItem>
+              <NavLink href="#">Complete</NavLink>
+            </NavItem>
+          </Nav>
         </Navbar>
       </div>
     )
