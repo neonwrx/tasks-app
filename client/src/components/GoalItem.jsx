@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { goalRef } from '../firebase';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { goalRef, userListRef } from '../firebase';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 class GoalItem extends Component {
   constructor(props) {
@@ -11,10 +11,14 @@ class GoalItem extends Component {
       buttonName: 'Add for me',
       disabled: false,
       modal: false,
-      title: ''
+      dropdownOpen: false,
+      title: '',
+      users: []
     }
 
     this.toggle = this.toggle.bind(this);
+    this.toggleAssigment = this.toggleAssigment.bind(this);
+    this.assignTask = this.assignTask.bind(this);
   }
 
   componentDidMount() {
@@ -26,6 +30,12 @@ class GoalItem extends Component {
           this.setState({ title: title });
         }
       })
+    });
+    userListRef.on('value', snap => {
+      snap.forEach(user => {
+        const { email, name } = user.val();
+        this.setState({ users: [ ...this.state.users, {email: email, name: name} ] });
+      })
     })
   }
 
@@ -35,11 +45,22 @@ class GoalItem extends Component {
     });
   }
 
+  toggleAssigment() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  }
+
   setTask() {
     const { email } = this.props.user;
     const { serverKey } = this.props.goal;
     this.setState({buttonName: 'Added', disabled: true});
     goalRef.child(serverKey).update({assigned: email});
+  }
+
+  assignTask(event) {
+    const { serverKey } = this.props.goal;
+    goalRef.child(serverKey).update({assigned: event.target.value});
   }
 
   deleteTask() {
@@ -62,13 +83,36 @@ class GoalItem extends Component {
       <div style={{margin: '5px'}}>
         <Link to={`/tasks/${serverKey}`}><strong>{title}</strong></Link>
         <span style={{marginRight: '5px'}}> submitted by <em>{creator}</em></span>
-        <button style={{marginLeft: '5px'}}
-          className="btn btn-sm btn-outline-primary"
-          disabled={this.state.disabled}
-          onClick={()=> this.setTask()}
-        >
-          { this.state.buttonName }
-        </button>
+        <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleAssigment}>
+          <Button
+            style={{marginLeft: '5px'}}
+            color="primary"
+            outline
+            size="sm"
+            // className="btn btn-sm btn-outline-primary"
+            disabled={this.state.disabled}
+            onClick={() => this.setTask()}
+          >
+            {this.state.buttonName}
+          </Button>
+          <DropdownToggle
+            caret
+            outline
+            color="primary"
+            size="sm"
+          >
+            Add for ...
+          </DropdownToggle>
+          <DropdownMenu>
+            {
+              this.state.users.map((user, index) => {
+                return (
+                  <DropdownItem key={index} value={user.email} onClick={(event) => this.assignTask(event)}>{user.name}</DropdownItem>
+                )
+              })
+            }
+          </DropdownMenu>
+        </ButtonDropdown>
         <Button
           outline
           className="fa fa-pencil"

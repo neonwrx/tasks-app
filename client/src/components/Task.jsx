@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { goalRef } from '../firebase';
+
+import Header from './Header';
 const request = require('superagent');
 
 // import PersonalTask from './PersonalTask';
 
 class Task extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +29,12 @@ class Task extends Component {
     this.toggleTitle = this.toggleTitle.bind(this);
     this.toggleDescr = this.toggleDescr.bind(this);
     this.editDescription = this.editDescription.bind(this);
+    this.goToPreviousPage = this.goToPreviousPage.bind(this);
+  }
+
+  goToPreviousPage(event) {
+    event.preventDefault();
+    this.props.history.goBack();
   }
 
   componentDidMount() {
@@ -130,121 +143,125 @@ class Task extends Component {
     const { title, description, attached } = this.props.task;
     // console.log('task', this.props.task.title);
     return(
-      <div style={{margin: '5px'}}>
-        <Link to={'/app'}><i className="fa fa-angle-double-left"></i> Back</Link>
-        <h4>
-          Task for <span><em>{ name }</em></span><span> ({ email })</span>
-        </h4>
-        <div>
+      <div>
+        <Header />
+        <div style={{margin: '5px'}}>
+          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Back</Link>
+          <h4>
+            Task for <span><em>{ name }</em></span><span> ({ email })</span>
+          </h4>
+          <br/>
           <div>
-            <strong>Task:</strong>
-            <Button
-              outline
-              className="fa fa-pencil"
-              color="secondary"
-              size="sm"
-              style={{marginLeft: '5px'}}
-              onClick={this.toggleTitle}
+            <div>
+              <strong>Task:</strong>
+              <Button
+                outline
+                className="fa fa-pencil"
+                color="secondary"
+                size="sm"
+                style={{marginLeft: '5px'}}
+                onClick={this.toggleTitle}
               >
               </Button>
+            </div>
+            <div>{ title }</div>
           </div>
-          <div>{ title }</div>
-        </div>
-        <FormGroup>
-          {/* <Label for="descriptionText"><strong>Description:</strong></Label> */}
+          <hr/>
+          <FormGroup>
+            {/* <Label for="descriptionText"><strong>Description:</strong></Label> */}
+            <div>
+              <strong>Description:</strong>
+              <Button
+                outline
+                className="fa fa-pencil"
+                color="secondary"
+                size="sm"
+                style={{marginLeft: '5px'}}
+                onClick={this.toggleDescr}
+              >
+              </Button>
+            </div>
+            <div><pre>{ description }</pre></div>
+          </FormGroup>
+          <hr/>
           <div>
-            <strong>Description:</strong>
-            <Button
-              outline
-              className="fa fa-pencil"
-              color="secondary"
-              size="sm"
-              style={{marginLeft: '5px'}}
-              onClick={this.toggleDescr}
-            >
-            </Button>
-          </div>
-          <div><pre>{ description }</pre></div>
-
-
-        </FormGroup>
-        <div>
-          <strong>Attached files: </strong>
-          <div>
-            {
-              attached ?
-                attached.split(",").map((file, index) => {
-                  return (
-                    <div key={index} style={{marginBottom: '5px'}}>
-                      <a href={'/uploads/' + file} download>{file}</a>
-                      <Button
-                        className="fa fa-times"
-                        color="danger"
-                        size="sm"
-                        style={{marginLeft: '5px'}}
-                        onClick={this.deleteFile.bind(this, file)}
-                      >
-                      </Button>
-                    </div>
-                  )
-                }) : 'No attached files'
-            }
-          </div>
-        </div>
-        <section>
-          <div className="dropzone">
-            <Dropzone onDrop={this.onDrop.bind(this)}>
-              <p>Try dropping some files here, or click to select files to upload.</p>
-            </Dropzone>
-          </div>
-          <aside>
-            <h2>Dropped files</h2>
-            <ul>
+            <strong>Attached files: </strong>
+            <div>
               {
-                this.state.files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
+                attached ?
+                  attached.split(",").map((file, index) => {
+                    return (
+                      <div key={index} style={{marginBottom: '5px'}}>
+                        <a href={'/uploads/' + file} download>{file}</a>
+                        <Button
+                          className="fa fa-times"
+                          color="danger"
+                          size="sm"
+                          style={{marginLeft: '5px'}}
+                          onClick={this.deleteFile.bind(this, file)}
+                        >
+                        </Button>
+                      </div>
+                    )
+                  }) : 'No attached files'
               }
-            </ul>
-          </aside>
-        </section>
-        <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
-          <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>
-          <ModalBody>
-            <label>Change title of the task</label>
-            <input
-              type="text"
-              placeholder="Edit a task"
-              className="form-control"
-              style={{marginRight: '5px'}}
-              ref="editInput"
-              value= { this.state.title }
-              onChange={event => this.setState({title: event.target.value})}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={()=> this.editTitle()}>Update</Button>{' '}
-            <Button color="secondary" onClick={this.toggleTitle}>Cancel</Button>
-          </ModalFooter>
-        </Modal>
-        <Modal isOpen={this.state.modal2} toggle={this.toggleDescr} className={this.props.className}>
-          <ModalHeader toggle={this.toggleDescr}>Change task description</ModalHeader>
-          <ModalBody>
-            <label>Change description of the task</label>
-            <Input
-              style={{marginRight: '5px'}}
-              type="textarea"
-              placeholder="Enter a description"
-              name="text"
-              rows="5"
-              ref="descriptionInput"
-              value= {this.state.description}
-              onChange={event => this.setState({description: event.target.value})}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={()=> this.editDescription()}>Update</Button>{' '}
-            <Button color="secondary" onClick={this.toggleDescr}>Cancel</Button>
-          </ModalFooter>
-        </Modal>
+            </div>
+          </div>
+          <section>
+            <div className="dropzone">
+              <Dropzone onDrop={this.onDrop.bind(this)}>
+                <p>Try dropping some files here, or click to select files to upload.</p>
+              </Dropzone>
+            </div>
+            <aside>
+              <h2>Dropped files</h2>
+              <ul>
+                {
+                  this.state.files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
+                }
+              </ul>
+            </aside>
+          </section>
+          <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
+            <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>
+            <ModalBody>
+              <label>Change title of the task</label>
+              <input
+                type="text"
+                placeholder="Edit a task"
+                className="form-control"
+                style={{marginRight: '5px'}}
+                ref="editInput"
+                value={ this.state.title }
+                onChange={event => this.setState({title: event.target.value})}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={()=> this.editTitle()}>Update</Button>{' '}
+              <Button color="secondary" onClick={this.toggleTitle}>Cancel</Button>
+            </ModalFooter>
+          </Modal>
+          <Modal isOpen={this.state.modal2} toggle={this.toggleDescr} className={this.props.className}>
+            <ModalHeader toggle={this.toggleDescr}>Change task description</ModalHeader>
+            <ModalBody>
+              <label>Change description of the task</label>
+              <Input
+                style={{marginRight: '5px'}}
+                type="textarea"
+                placeholder="Enter a description"
+                name="text"
+                rows="5"
+                ref="descriptionInput"
+                value= {this.state.description}
+                onChange={event => this.setState({description: event.target.value})}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={()=> this.editDescription()}>Update</Button>{' '}
+              <Button color="secondary" onClick={this.toggleDescr}>Cancel</Button>
+            </ModalFooter>
+          </Modal>
+        </div>
       </div>
     )
   }

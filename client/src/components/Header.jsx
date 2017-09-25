@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Navbar, NavbarBrand, Nav, NavItem } from 'reactstrap';
+import { NavLink } from 'react-router-dom';
 
 class Header extends Component {
   constructor(props) {
@@ -21,18 +21,17 @@ class Header extends Component {
   render() {
     return (
       <div style={{marginBottom: '5px'}}>
-        <Navbar color="faded" className="navbar-dark bg-dark">
-          <NavbarBrand href="/">Tasks Master</NavbarBrand>
+        <Navbar color="faded" className="navbar-inverse bg-inverse">
           <Nav pills>
+            <NavbarBrand href="/">Tasks Master</NavbarBrand>
             <NavItem>
-              <NavLink href="#" active>Tasks</NavLink>
+              <NavLink className="nav-link" to={'/app'} activeStyle={{ fontWeight: 'bold' }}>Tasks</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#"><Link to={'/taskslist'}>My Tasks</Link></NavLink>
-
+              <NavLink className="nav-link" to={'/taskslist'} activeStyle={{ fontWeight: 'bold' }}>My Tasks</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#">Complete</NavLink>
+              <NavLink className="nav-link" to={'/link'} activeStyle={{ fontWeight: 'bold' }}>Complete</NavLink>
             </NavItem>
           </Nav>
         </Navbar>

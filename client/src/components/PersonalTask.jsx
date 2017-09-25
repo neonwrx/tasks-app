@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { completeGoalRef, goalRef } from '../firebase';
 
 class PersonalTask extends Component {
@@ -12,10 +13,11 @@ class PersonalTask extends Component {
 
   render() {
     // console.log('this.props.goal', this.props.goal);
-    const { creator, title } = this.props.goal;
+    const { creator, title, serverKey } = this.props.goal;
     return (
       <div style={{margin: '5px'}}>
-        <strong>{ title }</strong> added by <em>{creator}</em>
+        <Link to={`/tasks/${serverKey}`}><strong>{title}</strong></Link>
+        <span> added by <em>{creator}</em></span>
         <button style={{marginLeft: '5px'}}
           className="btn btn-sm btn-outline-primary"
           onClick={()=> this.completeGoal()}

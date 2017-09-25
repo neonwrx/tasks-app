@@ -14,25 +14,27 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{margin: '5px'}}>
+      <div>
         <Header />
-        {/* <h3>Tasks Master</h3> */}
-        <AddGoal />
-        <hr />
-        <h4>Tasks</h4>
-        <GoalList />
-        <hr />
-        {/* <TasksList />
-        <hr /> */}
-        <h4>Complete Tasks</h4>
-        <CompleteGoalList />
-        <hr />
-        <button
-          className="btn btn-danger"
-          onClick={() => this.signOut()}
-        >
+        <div style={{margin: '5px'}}>
+          {/* <h3>Tasks Master</h3> */}
+          <AddGoal />
+          <hr />
+          <h4>Tasks</h4>
+          <GoalList />
+          <hr />
+          {/* <TasksList />
+            <hr /> */}
+          <h4>Complete Tasks</h4>
+          <CompleteGoalList />
+          <hr />
+          <button
+            className="btn btn-danger"
+            onClick={() => this.signOut()}
+          >
             Sign Out
-        </button>
+          </button>
+        </div>
       </div>
     )
   }
