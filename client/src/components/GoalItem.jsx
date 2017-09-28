@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { goalRef, userListRef } from '../firebase';
+import { goalRef } from '../firebase';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 class GoalItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonName: 'Add for me',
-      disabled: false,
+      // buttonName: 'Add for me',
+      // disabled: false,
       modal: false,
       dropdownOpen: false,
       title: '',
-      users: []
+      assigned: ''
     }
 
     this.toggle = this.toggle.bind(this);
@@ -24,19 +24,13 @@ class GoalItem extends Component {
   componentDidMount() {
     goalRef.on('value', snap => {
       snap.forEach(goal => {
-        const { title } = goal.val();
+        const { title, assigned } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.goal.serverKey) {
-          this.setState({ title: title });
+          this.setState({ title: title, assigned: assigned });
         }
       })
     });
-    userListRef.on('value', snap => {
-      snap.forEach(user => {
-        const { email, name } = user.val();
-        this.setState({ users: [ ...this.state.users, {email: email, name: name} ] });
-      })
-    })
   }
 
   toggle() {
@@ -51,12 +45,12 @@ class GoalItem extends Component {
     });
   }
 
-  setTask() {
-    const { email } = this.props.user;
-    const { serverKey } = this.props.goal;
-    this.setState({buttonName: 'Added', disabled: true});
-    goalRef.child(serverKey).update({assigned: email});
-  }
+  // setTask() {
+  //   const { email } = this.props.user;
+  //   const { serverKey } = this.props.goal;
+  //   this.setState({buttonName: 'Added', disabled: true});
+  //   goalRef.child(serverKey).update({assigned: email});
+  // }
 
   assignTask(event) {
     const { serverKey } = this.props.goal;
@@ -78,13 +72,23 @@ class GoalItem extends Component {
 
   render() {
     // console.log('this.props.goal', this.props.goal);
-    const { creator, title, serverKey } = this.props.goal;
+    const { creator, title, created, serverKey } = this.props.goal;
     return (
-      <div style={{margin: '5px'}}>
-        <Link to={`/tasks/${serverKey}`}><strong>{title}</strong></Link>
-        <span style={{marginRight: '5px'}}> submitted by <em>{creator}</em></span>
+      <div className="new-task" style={{margin: '5px'}}>
+        <span>{
+          this.props.users
+            .filter(user => user.email === this.state.assigned)
+            .map((user, index) => {
+              return(
+                <span key={index}>Назначен: {user.name}</span>
+              )
+          })
+        }</span>
+        <span><Link to={`/tasks/${serverKey}`}><strong style={{color: '#F86F71'}}>{title}</strong></Link></span>
+        <span style={{color: '#FFFFFF'}}> submitted by <em style={{color: '#CB98ED'}}>{creator}</em></span>
+        <span>{created}</span>
         <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleAssigment}>
-          <Button
+          {/* <Button
             style={{marginLeft: '5px'}}
             color="primary"
             outline
@@ -94,7 +98,7 @@ class GoalItem extends Component {
             onClick={() => this.setTask()}
           >
             {this.state.buttonName}
-          </Button>
+          </Button> */}
           <DropdownToggle
             caret
             outline
@@ -105,7 +109,7 @@ class GoalItem extends Component {
           </DropdownToggle>
           <DropdownMenu>
             {
-              this.state.users.map((user, index) => {
+              this.props.users.map((user, index) => {
                 return (
                   <DropdownItem key={index} value={user.email} onClick={(event) => this.assignTask(event)}>{user.name}</DropdownItem>
                 )
@@ -152,9 +156,10 @@ class GoalItem extends Component {
 }
 
 function mapStateToProps(state) {
-  const { user } = state;
+  const { user, users } = state;
   return {
-    user
+    user,
+    users
   }
 }
 

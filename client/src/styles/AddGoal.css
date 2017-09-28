@@ -1,0 +1,43 @@
+.form-addgoal {
+	margin-top: 60px;
+}
+.form-group-addgoal {
+	display: inline-block;
+	width: auto!important;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 20px;
+	font-weight: bold;
+	-webkit-border-radius: 10px; border-radius: 10px;
+	padding: 5px 10px!important;
+	-webkit-box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	-moz-box-shadow:    5px 5px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	box-shadow:         5px 5px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+}
+.form-group-title{
+	width: 100%;
+	line-height: 1;
+	padding-bottom: 3px;
+}
+.form-group input{
+	background: #F3FBE3;
+	-webkit-box-shadow: 4px 7px 6px 0px rgba(0, 0, 0, 0.14);
+	-moz-box-shadow:    4px 7px 6px 0px rgba(0, 0, 0, 0.14);
+	box-shadow:         4px 7px 6px 0px rgba(0, 0, 0, 0.14);
+}
+.form-group button{
+	color: #3D4149;
+	font-weight: bold;
+	border: none;
+	cursor: pointer;
+	background: rgba(69,225,189,1);
+	background: -moz-linear-gradient(0deg, rgba(69,225,189,1) 0%, rgba(119,233,207,1) 100%);
+	background: -webkit-linear-gradient(0deg, rgba(69,225,189,1) 0%,rgba(119,233,207,1) 100%);
+	background: linear-gradient(0deg, rgba(69,225,189,1) 0%,rgba(119,233,207,1) 100%);
+	-webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.43);
+	-moz-box-shadow:    0px 1px 2px 0px rgba(0, 0, 0, 0.43);
+	box-shadow:         0px 1px 2px 0px rgba(0, 0, 0, 0.43);
+}
+.form-group button:hover{
+	color: #3D4149;
+}

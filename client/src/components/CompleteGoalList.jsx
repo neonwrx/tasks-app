@@ -1,9 +1,26 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {connect } from 'react-redux';
 import { setCompleted } from '../actions';
 import { completeGoalRef } from '../firebase';
+import Header from './Header';
+import { Link } from 'react-router-dom';
 
 class CompleteGoalList extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired
+  }
+
+  constructor(props) {
+    super(props)
+    this.goToPreviousPage = this.goToPreviousPage.bind(this)
+  }
+
+  goToPreviousPage(event) {
+    event.preventDefault()
+    this.props.history.goBack();
+  }
+
   componentDidMount() {
     completeGoalRef.on('value', snap => {
       let completeGoals = [];
@@ -22,22 +39,27 @@ class CompleteGoalList extends Component {
   render() {
     return (
       <div>
-        {
-          this.props.completeGoals.map((completeGoal, index) => {
-            const { title, email } = completeGoal;
-            return (
-              <div key={index}>
-                <strong>{title}</strong> completed by <em>{email}</em>
-              </div>
-            )
-          })
-        }
+        <Header />
+        <div>
+          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Back</Link>
+          {
+            this.props.completeGoals.map((completeGoal, index) => {
+              const { title, email } = completeGoal;
+              return (
+                <div className="completed-task" key={index}>
+                  <span><strong style={{color: '#44E1BD'}}>{title}</strong></span>
+                  <span style={{color: '#FFFFFF'}}>completed by <em style={{color: '#CB98ED'}}>{email}</em></span>
+                </div>
+              )
+            })
+          }
+        </div>
         <button
           style={{marginTop: '5px'}}
           className="btn btn-primary"
           onClick={() => this.clearCompleted()}
           >
-          Clear All
+          Очистить список
         </button>
       </div>
     )

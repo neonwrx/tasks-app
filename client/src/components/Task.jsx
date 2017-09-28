@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
-import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { goalRef } from '../firebase';
 
 import Header from './Header';
@@ -21,13 +21,17 @@ class Task extends Component {
     this.state = {
       modal1: false,
       modal2: false,
+      dropdownOpen: false,
       title: '',
       description: '',
-      files: []
+      files: [],
+      status: ''
     }
 
     this.toggleTitle = this.toggleTitle.bind(this);
     this.toggleDescr = this.toggleDescr.bind(this);
+    this.toggleStatus = this.toggleStatus.bind(this);
+    this.assignStatus = this.assignStatus.bind(this);
     this.editDescription = this.editDescription.bind(this);
     this.goToPreviousPage = this.goToPreviousPage.bind(this);
   }
@@ -40,10 +44,10 @@ class Task extends Component {
   componentDidMount() {
     goalRef.on('value', snap => {
       snap.forEach(goal => {
-        const { title, description, attached } = goal.val();
+        const { title, description, attached, status } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.task.serverKey) {
-          this.setState({ title: title, description: description, attached: attached });
+          this.setState({ title: title, description: description, attached: attached, status: status });
         }
       })
     })
@@ -59,6 +63,17 @@ class Task extends Component {
     this.setState({
       modal2: !this.state.modal2
     });
+  }
+
+  toggleStatus() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  }
+
+  assignStatus(event) {
+    const { serverKey } = this.props.task;
+    goalRef.child(serverKey).update({status: event.target.value});
   }
 
   editTitle() {
@@ -151,6 +166,23 @@ class Task extends Component {
             Task for <span><em>{ name }</em></span><span> ({ email })</span>
           </h4>
           <br/>
+          <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
+            <DropdownToggle
+              caret
+              outline
+              color="primary"
+              size="sm"
+            >
+              Статус
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem value="Новое" onClick={(event) => this.assignStatus(event)}>Новое</DropdownItem>
+              <DropdownItem value="В работе" onClick={(event) => this.assignStatus(event)}>В работе</DropdownItem>
+              <DropdownItem value="На проверке" onClick={(event) => this.assignStatus(event)}>На проверке</DropdownItem>
+              <DropdownItem value="Выполнено" onClick={(event) => this.assignStatus(event)}>Выполнено</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+          <span>{this.state.status}</span>
           <div>
             <div>
               <strong>Task:</strong>

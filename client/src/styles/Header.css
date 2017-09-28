@@ -1,0 +1,100 @@
+.navbar {
+	margin-bottom: 5px;
+	padding: 0 1.5rem 1rem;
+	background: #3D4149!important;
+	-webkit-box-shadow: 9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	-moz-box-shadow:    9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	box-shadow:         9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+}
+	.navbar:before {
+		content: "";
+	    position: absolute;
+	    top: 10px;
+	    left: 5%;
+	    width: 146px;
+	    height: 143px;
+	    background: url(../images/icon-header.png) no-repeat center;
+	    -webkit-background-size: 100% auto;
+	    background-size: 100% auto;
+	}
+.nav-pills .nav-link {
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	padding-top: 50px;
+	-webkit-box-shadow: 6px 6px 7px 0px rgba(0, 0, 0, 0.14);
+	-moz-box-shadow:    6px 6px 7px 0px rgba(0, 0, 0, 0.14);
+	box-shadow:         6px 6px 7px 0px rgba(0, 0, 0, 0.14);
+}
+.nav {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: baseline;
+	-ms-flex-align: baseline;
+	align-items: center;
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
+	justify-content: center;
+}
+.nav-item {
+	padding: 0 2rem;
+	font-weight: bold;
+}
+.nav-item a {
+	color: #3D4149;
+}
+
+.task {
+	background-color: #F87072!important;
+	background-image: url(../images/icon-task.png);
+	background-repeat: no-repeat;
+	background-position: center top 5px;
+	-webkit-background-size: 32px auto;
+	background-size: 32px auto;
+	width: 115px;
+	text-align: center;
+}
+	.block-task .active{
+		background-image: url(../images/icon-task-active.png);
+		background-repeat: no-repeat;
+		background-position: center top 5px;
+		-webkit-background-size: 32px auto;
+		background-size: 32px auto;
+	}
+.my-task {
+	background-color: #CB98ED!important;
+	background-image: url(../images/icon-my_task.png);
+	background-repeat: no-repeat;
+	background-position: center top 5px;
+	-webkit-background-size: 32px auto;
+	background-size: 32px auto;
+}
+	.block-my-task .active{
+		background-image: url(../images/icon-my_task-active.png);
+		background-repeat: no-repeat;
+		background-position: center top 5px;
+		-webkit-background-size: 32px auto;
+		background-size: 32px auto;
+	}
+.task-complete {
+	background-color: #45E1BD!important;
+	background-image: url(../images/icon-compl.png);
+	background-repeat: no-repeat;
+	background-position: center top 5px;
+	-webkit-background-size: 32px auto;
+	background-size: 32px auto;
+}
+	.block-task-complete .active{
+		background-image: url(../images/icon-compl-active.png);
+		background-repeat: no-repeat;
+		background-position: center top 5px;
+		-webkit-background-size: 32px auto;
+		background-size: 32px auto;
+	}
+.btn-exit {
+	position: absolute;
+	top: 20px;
+	right: 50px;
+	padding: 0.75rem 2rem;
+	font-size: 1.143rem;
+}

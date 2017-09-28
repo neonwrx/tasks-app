@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { goalRef } from '../firebase';
+import { goalRef, userListRef } from '../firebase';
 import { setGoals } from '../actions';
+import { setUsers } from '../actions';
 import GoalItem from './GoalItem';
 
 class GoalList extends Component {
@@ -9,11 +10,19 @@ class GoalList extends Component {
     goalRef.on('value', snap => {
       let goals = [];
       snap.forEach(goal => {
-        const { creator, title, assigned, description, attached } = goal.val();
+        const { creator, title, assigned, description, attached, created } = goal.val();
         const serverKey = goal.key;
-        goals.push({ creator, title, assigned, description, attached, serverKey });
+        goals.push({ creator, title, assigned, description, attached, created, serverKey });
       })
       this.props.setGoals(goals);
+    });
+    userListRef.on('value', snap => {
+      let users = [];
+      snap.forEach(user => {
+        const { email, name } = user.val();
+        users.push({ email, name });
+      })
+      this.props.setUsers(users);
     })
   }
 
@@ -34,10 +43,11 @@ class GoalList extends Component {
 }
 
 function mapStateToProps(state) {
-  const { goals } = state;
+  const { goals, users } = state;
   return {
-    goals
+    goals,
+    users
   }
 }
 
-export default connect(mapStateToProps, { setGoals })(GoalList);
+export default connect(mapStateToProps, { setGoals, setUsers })(GoalList);

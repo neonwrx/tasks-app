@@ -18,6 +18,7 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Task from './components/Task';
 import TasksList from './components/TasksList';
+import CompleteGoalList from './components/CompleteGoalList';
 
 import './styles/App.css';
 
@@ -63,7 +64,8 @@ ReactDOM.render(
         <Route exact path="/app" component={App} />
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
-        <Route path="/taskslist" component={TasksList} />
+        <Route path="/mytaskslist" component={TasksList} />
+        <Route path="/completedtasks" component={CompleteGoalList} />
         <Route path="/tasks/:id" component={Task} />
       </div>
     </ConnectedRouter>

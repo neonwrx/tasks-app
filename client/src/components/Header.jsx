@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Navbar, NavbarBrand, Nav, NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import { firebaseApp } from '../firebase';
 
 class Header extends Component {
   constructor(props) {
@@ -12,6 +13,10 @@ class Header extends Component {
     };
   }
 
+  signOut() {
+    firebaseApp.auth().signOut();
+  }
+
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
@@ -20,21 +25,27 @@ class Header extends Component {
 
   render() {
     return (
-      <div style={{marginBottom: '5px'}}>
+      <div>
         <Navbar color="faded" className="navbar-inverse bg-inverse">
           <Nav pills>
             <NavbarBrand href="/">Tasks Master</NavbarBrand>
-            <NavItem>
-              <NavLink className="nav-link" to={'/app'} activeStyle={{ fontWeight: 'bold' }}>Tasks</NavLink>
+            <NavItem className="block-task">
+              <NavLink className="nav-link task" to={'/app'} activeStyle={{ fontWeight: 'bold' }}>Задания</NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink className="nav-link" to={'/taskslist'} activeStyle={{ fontWeight: 'bold' }}>My Tasks</NavLink>
+            <NavItem className="block-my-task">
+              <NavLink className="nav-link my-task" to={'/mytaskslist'} activeStyle={{ fontWeight: 'bold' }}>Мои задания</NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink className="nav-link" to={'/link'} activeStyle={{ fontWeight: 'bold' }}>Complete</NavLink>
+            <NavItem className="block-task-complete">
+              <NavLink className="nav-link task-complete" to={'/completedtasks'} activeStyle={{ fontWeight: 'bold' }}>Выполненые</NavLink>
             </NavItem>
           </Nav>
         </Navbar>
+        <button
+          className="btn btn-danger btn-exit"
+          onClick={() => this.signOut()}
+        >
+          Выход
+        </button>
       </div>
     )
   }

@@ -31,43 +31,54 @@ class SignUp extends Component {
 
   render() {
     return (
-      <div style={{margin: '5%'}}>
-        <h2>Sign Up</h2>
+      <div className="page">
+        <div className="title-block">Задачи RGK</div>
+        <div className="main-block" style={{width: '55%'}}>
+        <h2>Регистрация</h2>
         <div className="form-inline">
           <div className="form-group">
-            <input
-              type="text"
-              style={{marginRight: '5px'}}
-              className="form-control"
-              placeholder="email"
-              onChange={event => this.setState({email: event.target.value})}
-            />
-            <input
-              type="password"
-              style={{marginRight: '5px'}}
-              className="form-control"
-              placeholder="password"
-              onChange={event => this.setState({password: event.target.value})}
-            />
-            <input
-              type="text"
-              style={{marginRight: '5px'}}
-              className="form-control"
-              placeholder="your name"
-              onChange={event => this.setState({name: event.target.value})}
-            />
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={() => this.signUp()}
-            >
-              Sign Up
-            </button>
+            <div className="group-login group-reg">
+              <input
+                type="text"
+                style={{marginRight: '5px'}}
+                className="form-control"
+                placeholder="email"
+                onChange={event => this.setState({email: event.target.value})}
+              />
+            </div>
+            <div className="group-login group-reg">
+              <input
+                type="password"
+                style={{marginRight: '5px'}}
+                className="form-control"
+                placeholder="password"
+                onChange={event => this.setState({password: event.target.value})}
+              />
+            </div>
+            <div className="group-login group-reg">
+              <input
+                type="text"
+                style={{marginRight: '5px'}}
+                className="form-control"
+                placeholder="your name"
+                onChange={event => this.setState({name: event.target.value})}
+              />
+            </div>
+            <div className="group-login group-reg">
+              <button
+                className="btn btn-primary registration"
+                type="button"
+                onClick={() => this.signUp()}
+              >
+                Регистрация
+              </button>
+            </div>
           </div>
         </div>
-        <div>{this.state.error.message}</div>
-        <div><Link to={'/signin'}>Already a user? sign in instead</Link></div>
+        <div className="reg_erron">{this.state.error.message}</div>
+        <div className="reg_back"><Link to={'/signin'}>Вернуться на страницу Логина.</Link></div>
       </div>
+     </div>
     )
   }
 }
