@@ -8,7 +8,6 @@ import '../styles/Header.css';
 // import TasksList from './TasksList';
 
 class App extends Component {
-
   render() {
     return (
       <div className="page">
@@ -18,6 +17,7 @@ class App extends Component {
           <AddGoal />
           <hr />
           <h4 style={{color: '#FFFFFF'}}>Задания</h4>
+          <hr />
           <GoalList />
           <hr />
           {/* <TasksList />

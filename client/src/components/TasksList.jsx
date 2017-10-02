@@ -23,12 +23,12 @@ class TasksList extends Component {
   render() {
     const { name, email } = this.props.user;
     return (
-      <div>
+      <div className="page page-mytask">
         <Header />
-        <div style={{margin: '5px'}}>
-          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Back</Link>
-          <h4>
-            List of tasks for <span><em>{ name }</em></span><span> ({ email })</span>
+        <div style={{margin: '60px 50px'}}>
+          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
+          <h4 style={{color: '#FFFFFF'}}>
+            Список задач <span><em>{ name }</em></span><span> ({ email })</span>
           </h4>
           {
             this.props.goals.map((goal, index) => {

@@ -13,14 +13,14 @@ class Header extends Component {
     };
   }
 
-  signOut() {
-    firebaseApp.auth().signOut();
-  }
-
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
     });
+  }
+
+  signOut() {
+    firebaseApp.auth().signOut();
   }
 
   render() {
@@ -36,7 +36,7 @@ class Header extends Component {
               <NavLink className="nav-link my-task" to={'/mytaskslist'} activeStyle={{ fontWeight: 'bold' }}>Мои задания</NavLink>
             </NavItem>
             <NavItem className="block-task-complete">
-              <NavLink className="nav-link task-complete" to={'/completedtasks'} activeStyle={{ fontWeight: 'bold' }}>Выполненые</NavLink>
+              <NavLink className="nav-link task-complete" to={'/completedtasks'} activeStyle={{ fontWeight: 'bold' }}>Завершенные</NavLink>
             </NavItem>
           </Nav>
         </Navbar>
@@ -44,7 +44,7 @@ class Header extends Component {
           className="btn btn-danger btn-exit"
           onClick={() => this.signOut()}
         >
-          Выход
+          <i className="fa fa-sign-out" aria-hidden="true"></i> Выход
         </button>
       </div>
     )

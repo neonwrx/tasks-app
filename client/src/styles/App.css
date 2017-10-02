@@ -1,5 +1,16 @@
 html {
   font-size: 14px;
+  height: 100%;
+  background: #3D4149;
+}
+body {
+	width: 100%;
+  background-color: #3d4149;
+  color: #dadada;
+}
+.page {
+	position: relative;
+	background: #3D4149;
 }
 .new-task{
 	display: -webkit-box;
@@ -14,7 +25,6 @@ html {
 	text-align: right;
 }
 .new-task span{
-	display: block;
 	width: 25%;
 	text-align: left;
 	overflow: hidden;
@@ -24,10 +34,30 @@ html {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+.my-task-block button {
+  background-color: #0275d8;
+  border-color: #0275d8;
+  color: #fff;
+}
 .completed-task span{
 	display: inline-block;
-	width: 25%;
-	text-align: left;
 	overflow: hidden;
+	text-align: left;
 	text-overflow: ellipsis;
+	width: 25%;
+}
+.new-task .new-task-name {
+	width: auto;
+	min-width: 30px;
+	color: #FFFFFF;
+}
+.page-taskcomplite button {
+	margin-left: 50px;
+}
+/* --- New styles --- */
+.modal-dialog {
+  color: #000;
+}
+.dropdown-item:focus, .dropdown-item:hover {
+  background-color: #3d8ed2;
 }

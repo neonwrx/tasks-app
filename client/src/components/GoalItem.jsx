@@ -8,26 +8,27 @@ class GoalItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // buttonName: 'Add for me',
-      // disabled: false,
       modal: false,
       dropdownOpen: false,
+      changeStatus: false,
       title: '',
-      assigned: ''
+      assigned: '',
+      status: ''
     }
 
     this.toggle = this.toggle.bind(this);
     this.toggleAssigment = this.toggleAssigment.bind(this);
     this.assignTask = this.assignTask.bind(this);
+    this.changeStatus = this.changeStatus.bind(this);
   }
 
   componentDidMount() {
     goalRef.on('value', snap => {
       snap.forEach(goal => {
-        const { title, assigned } = goal.val();
+        const { title, assigned, status } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.goal.serverKey) {
-          this.setState({ title: title, assigned: assigned });
+          this.setState({ title: title, assigned: assigned, status: status });
         }
       })
     });
@@ -45,16 +46,15 @@ class GoalItem extends Component {
     });
   }
 
-  // setTask() {
-  //   const { email } = this.props.user;
-  //   const { serverKey } = this.props.goal;
-  //   this.setState({buttonName: 'Added', disabled: true});
-  //   goalRef.child(serverKey).update({assigned: email});
-  // }
+  changeStatus() {
+    this.setState({
+      changeStatus: !this.state.changeStatus
+    });
+  }
 
   assignTask(event) {
     const { serverKey } = this.props.goal;
-    goalRef.child(serverKey).update({assigned: event.target.value});
+    goalRef.child(serverKey).update({assigned: event.target.parentNode.value});
   }
 
   deleteTask() {
@@ -72,65 +72,82 @@ class GoalItem extends Component {
 
   render() {
     // console.log('this.props.goal', this.props.goal);
-    const { creator, title, created, serverKey } = this.props.goal;
+    const { creator, title, created, category, serverKey } = this.props.goal;
     return (
-      <div className="new-task" style={{margin: '5px'}}>
-        <span>{
-          this.props.users
-            .filter(user => user.email === this.state.assigned)
-            .map((user, index) => {
-              return(
-                <span key={index}>Назначен: {user.name}</span>
-              )
-          })
-        }</span>
-        <span><Link to={`/tasks/${serverKey}`}><strong style={{color: '#F86F71'}}>{title}</strong></Link></span>
-        <span style={{color: '#FFFFFF'}}> submitted by <em style={{color: '#CB98ED'}}>{creator}</em></span>
-        <span>{created}</span>
-        <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleAssigment}>
-          {/* <Button
-            style={{marginLeft: '5px'}}
-            color="primary"
-            outline
-            size="sm"
-            // className="btn btn-sm btn-outline-primary"
-            disabled={this.state.disabled}
-            onClick={() => this.setTask()}
-          >
-            {this.state.buttonName}
-          </Button> */}
-          <DropdownToggle
-            caret
-            outline
-            color="primary"
-            size="sm"
-          >
-            Add for ...
-          </DropdownToggle>
-          <DropdownMenu>
-            {
-              this.props.users.map((user, index) => {
-                return (
-                  <DropdownItem key={index} value={user.email} onClick={(event) => this.assignTask(event)}>{user.name}</DropdownItem>
+      <tr>
+        <td>
+          {
+            this.props.users
+              .filter(user => user.email === this.state.assigned)
+              .map((user, index) => {
+                return(
+                  <span style={{width: 'auto'}} key={index}>
+                    <img src={require('../../uploads/avatars/' + user.avatar)} alt="avatar" className="avatar" />
+                  </span>
                 )
-              })
+            })
+          }
+        </td>
+        <td className="tasks__title">
+          <Link to={`/tasks/${serverKey}`}><strong style={{color: '#F86F71'}}>{title}</strong></Link>
+        </td>
+        <td><em style={{color: '#CB98ED'}}>{creator}</em></td>
+        <td>{created}</td>
+        <td>
+          {(() => {
+            if (this.state.changeStatus) {
+              return (
+                <span onClick={() => this.changeStatus()}>Changed</span>
+              )
+
+            } else {
+              return (
+                <span onClick={() => this.changeStatus()}>{this.state.status}</span>
+              )
             }
-          </DropdownMenu>
-        </ButtonDropdown>
-        <Button
-          outline
-          className="fa fa-pencil"
-          color="secondary"
-          size="sm"
-          style={{marginLeft: '5px'}}
-          onClick={this.toggle}
-        >
-        </Button>
-        <button style={{marginLeft: '5px'}}
-          className="btn btn-sm btn-danger fa fa-times"
-          onClick={()=> this.deleteTask()}
-        >
-        </button>
+          })()}
+        </td>
+        <td>{category}</td>
+        <td className="tasks__edit">
+          <ButtonDropdown tether isOpen={this.state.dropdownOpen} toggle={this.toggleAssigment}>
+            <DropdownToggle
+              caret
+              outline
+              color="primary"
+              size="sm"
+            >
+              Add for ...
+            </DropdownToggle>
+            <DropdownMenu>
+              {
+                this.props.users.map((user, index) => {
+                  return (
+                    <DropdownItem key={index} value={user.email} onClick={(event) => this.assignTask(event)}>
+                      <img className="avatar" value={user.email} src={require('../../uploads/avatars/' + user.avatar)} alt="" style={{marginRight: '8px'}} />
+                      <span>{user.name}</span>
+                    </DropdownItem>
+                  )
+                })
+              }
+              <DropdownItem divider />
+              <DropdownItem value="" onClick={(event) => this.assignTask(event)}>Отвязать</DropdownItem>
+            </DropdownMenu>
+          </ButtonDropdown>
+          <Button
+            outline
+            className="fa fa-pencil"
+            color="secondary"
+            size="sm"
+            style={{marginLeft: '5px'}}
+            onClick={this.toggle}
+          >
+          </Button>
+          <button style={{marginLeft: '5px'}}
+            className="btn btn-sm btn-danger fa fa-times"
+            onClick={()=> this.deleteTask()}
+          >
+          </button>
+        </td>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Change task title</ModalHeader>
           <ModalBody>
@@ -150,7 +167,7 @@ class GoalItem extends Component {
             <Button color="secondary" onClick={this.toggle}>Cancel</Button>
           </ModalFooter>
         </Modal>
-      </div>
+      </tr>
     )
   }
 }

@@ -11,15 +11,22 @@ class AddGoal extends Component {
     }
   }
 
+  _handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      this.addGoal();
+    }
+  }
+
   addGoal() {
     let d = new Date();
     function formatDate(date) {
       let dd = date.getDate();
       if (dd < 10) dd = '0' + dd;
-      let month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      let month = ["Янв", "Фев", "Март", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
       let yy = date.getFullYear();
       let hh = date.getHours();
       let mm = date.getMinutes();
+      if (mm < 10) mm = '0' + mm;
 
       return dd + ' ' + month[date.getMonth()] + ' ' + yy + ' | ' + hh + ':' + mm;
     };
@@ -35,7 +42,7 @@ class AddGoal extends Component {
       <div className="form-inline form-addgoal">
         <div className="form-group form-group-addgoal">
         <div className="form-group-title">Новое задание:</div>
-        <div>
+        <div className="input-addgoal" >
           <input
             type="text"
             placeholder="Добавить задачу ..."
@@ -43,6 +50,7 @@ class AddGoal extends Component {
             style={{marginRight: '5px'}}
             ref="addInput"
             onChange={event => this.setState({title: event.target.value})}
+            onKeyPress={this._handleKeyPress}
           />
         </div>
           <button

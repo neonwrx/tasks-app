@@ -1,0 +1,43 @@
+.tasks {
+}
+.tasks thead th {
+  color: #fff;
+  border-bottom: 0px solid #eceeef;
+  border-top: none;
+}
+.tasks td {
+  border-top: 1px solid #4f535d;
+  overflow: hidden;
+	text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tasks td a, .tasks td a strong {
+  color: #F86F71;
+}
+.tasks .tasks__title {
+  max-width: 200px;
+}
+/*.tasks .tasks__edit {
+  max-width: 180px;
+}*/
+.avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+.datepicker {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.datepicker > div:nth-child(-n+3) {
+  display: inline;
+  margin: 0 5px;
+}
+.react-datepicker-wrapper {
+  width: 95px;
+}
+.day-button {
+  padding-left: .3rem;
+  padding-right: .3rem;
+}

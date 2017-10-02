@@ -38,10 +38,11 @@ class CompleteGoalList extends Component {
 
   render() {
     return (
-      <div>
+      <div className="page page-taskcomplite">
         <Header />
-        <div>
-          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Back</Link>
+        <div style={{margin: '60px 50px'}}>
+          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
+          <h4 style={{color: '#FFFFFF'}}>Выполненные задачи</h4>
           {
             this.props.completeGoals.map((completeGoal, index) => {
               const { title, email } = completeGoal;

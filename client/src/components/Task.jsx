@@ -22,15 +22,18 @@ class Task extends Component {
       modal1: false,
       modal2: false,
       dropdownOpen: false,
+      dropdownCategoryOpen: false,
       title: '',
       description: '',
       files: [],
-      status: ''
+      status: '',
+      category: ''
     }
 
     this.toggleTitle = this.toggleTitle.bind(this);
     this.toggleDescr = this.toggleDescr.bind(this);
     this.toggleStatus = this.toggleStatus.bind(this);
+    this.toggleCategory = this.toggleCategory.bind(this);
     this.assignStatus = this.assignStatus.bind(this);
     this.editDescription = this.editDescription.bind(this);
     this.goToPreviousPage = this.goToPreviousPage.bind(this);
@@ -44,10 +47,10 @@ class Task extends Component {
   componentDidMount() {
     goalRef.on('value', snap => {
       snap.forEach(goal => {
-        const { title, description, attached, status } = goal.val();
+        const { title, description, attached, status, category } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.task.serverKey) {
-          this.setState({ title: title, description: description, attached: attached, status: status });
+          this.setState({ title: title, description: description, attached: attached, status: status, category: category });
         }
       })
     })
@@ -71,9 +74,20 @@ class Task extends Component {
     });
   }
 
+  toggleCategory() {
+    this.setState({
+      dropdownCategoryOpen: !this.state.dropdownCategoryOpen
+    });
+  }
+
   assignStatus(event) {
     const { serverKey } = this.props.task;
     goalRef.child(serverKey).update({status: event.target.value});
+  }
+
+  assignCategory(event) {
+    const { serverKey } = this.props.task;
+    goalRef.child(serverKey).update({category: event.target.value});
   }
 
   editTitle() {
@@ -166,23 +180,42 @@ class Task extends Component {
             Task for <span><em>{ name }</em></span><span> ({ email })</span>
           </h4>
           <br/>
-          <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
-            <DropdownToggle
-              caret
-              outline
-              color="primary"
-              size="sm"
-            >
-              Статус
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem value="Новое" onClick={(event) => this.assignStatus(event)}>Новое</DropdownItem>
-              <DropdownItem value="В работе" onClick={(event) => this.assignStatus(event)}>В работе</DropdownItem>
-              <DropdownItem value="На проверке" onClick={(event) => this.assignStatus(event)}>На проверке</DropdownItem>
-              <DropdownItem value="Выполнено" onClick={(event) => this.assignStatus(event)}>Выполнено</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-          <span>{this.state.status}</span>
+          <div>
+            <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
+              <DropdownToggle
+                caret
+                outline
+                color="primary"
+                size="sm"
+              >
+                Статус
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem value="Новое" onClick={(event) => this.assignStatus(event)}>Новое</DropdownItem>
+                <DropdownItem value="В работе" onClick={(event) => this.assignStatus(event)}>В работе</DropdownItem>
+                <DropdownItem value="На проверке" onClick={(event) => this.assignStatus(event)}>На проверку</DropdownItem>
+                <DropdownItem value="Выполнено" onClick={(event) => this.assignStatus(event)}>Выполнено</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            <span>{this.state.status}</span>
+          </div>
+          <div>
+            <Dropdown isOpen={this.state.dropdownCategoryOpen} toggle={this.toggleCategory}>
+              <DropdownToggle
+                caret
+                outline
+                color="primary"
+                size="sm"
+              >
+                Категория
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem value="На тест" onClick={(event) => this.assignCategory(event)}>На тест</DropdownItem>
+                <DropdownItem value="Согласование" onClick={(event) => this.assignCategory(event)}>Согласование</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            <span>{this.state.category}</span>
+          </div>
           <div>
             <div>
               <strong>Task:</strong>

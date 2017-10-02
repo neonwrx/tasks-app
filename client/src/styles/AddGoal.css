@@ -1,5 +1,11 @@
+a:hover {
+	text-decoration: none;
+}
 .form-addgoal {
 	margin-top: 60px;
+}
+.form-inline .form-group {
+	display: block;
 }
 .form-group-addgoal {
 	display: inline-block;
@@ -13,6 +19,21 @@
 	-webkit-box-shadow: 5px 5px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
 	-moz-box-shadow:    5px 5px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
 	box-shadow:         5px 5px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: baseline;
+	-ms-flex-align: baseline;
+	align-items: center;
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+}
+.input-addgoal {
+	display: inline-block;
+}
+.form-inline .form-control {
+	width: 250px;
 }
 .form-group-title{
 	width: 100%;

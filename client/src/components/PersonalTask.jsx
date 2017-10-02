@@ -15,14 +15,14 @@ class PersonalTask extends Component {
     // console.log('this.props.goal', this.props.goal);
     const { creator, title, serverKey } = this.props.goal;
     return (
-      <div style={{margin: '5px'}}>
-        <Link to={`/tasks/${serverKey}`}><strong>{title}</strong></Link>
-        <span> added by <em>{creator}</em></span>
+      <div className="new-task my-task-block" style={{margin: '5px'}}>
+        <span><Link to={`/tasks/${serverKey}`}><strong style={{color: '#F86F71'}}>{title}</strong></Link></span>
+        <span style={{color: '#FFFFFF'}}> added by <em style={{color: '#CB98ED'}}>{creator}</em></span>
         <button style={{marginLeft: '5px'}}
           className="btn btn-sm btn-outline-primary"
           onClick={()=> this.completeGoal()}
         >
-          Complete
+          Завершить
         </button>
       </div>
     )
