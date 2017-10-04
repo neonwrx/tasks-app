@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { goalRef } from '../firebase';
+import '../styles/Task.css';
 
 import Header from './Header';
 const request = require('superagent');
@@ -174,51 +175,54 @@ class Task extends Component {
     return(
       <div>
         <Header />
-        <div style={{margin: '5px'}}>
-          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Back</Link>
-          <h4>
+        <div className="block-task-container">
+          <div className="task-button-back">
+            <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Закрыть</Link>
+          </div>
+          <h4 style={{color: '#FFFFFF'}}>
             Task for <span><em>{ name }</em></span><span> ({ email })</span>
           </h4>
           <br/>
-          <div>
+          <div className="block-Dropdown">
             <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
               <DropdownToggle
                 caret
                 outline
                 color="primary"
                 size="sm"
-              >
-                Статус
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem value="Новое" onClick={(event) => this.assignStatus(event)}>Новое</DropdownItem>
-                <DropdownItem value="В работе" onClick={(event) => this.assignStatus(event)}>В работе</DropdownItem>
-                <DropdownItem value="На проверке" onClick={(event) => this.assignStatus(event)}>На проверку</DropdownItem>
-                <DropdownItem value="Выполнено" onClick={(event) => this.assignStatus(event)}>Выполнено</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-            <span>{this.state.status}</span>
+                >
+                  Статус
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem value="Новое" onClick={(event) => this.assignStatus(event)}>Новое</DropdownItem>
+                  <DropdownItem value="В работе" onClick={(event) => this.assignStatus(event)}>В работе</DropdownItem>
+                  <DropdownItem value="На проверке" onClick={(event) => this.assignStatus(event)}>На проверку</DropdownItem>
+                  <DropdownItem value="Выполнено" onClick={(event) => this.assignStatus(event)}>Выполнено</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              <span>{this.state.status}</span>
           </div>
-          <div>
+          <div className="block-Dropdown">
             <Dropdown isOpen={this.state.dropdownCategoryOpen} toggle={this.toggleCategory}>
               <DropdownToggle
                 caret
                 outline
                 color="primary"
                 size="sm"
-              >
-                Категория
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem value="На тест" onClick={(event) => this.assignCategory(event)}>На тест</DropdownItem>
-                <DropdownItem value="Согласование" onClick={(event) => this.assignCategory(event)}>Согласование</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-            <span>{this.state.category}</span>
+                >
+                  Категория
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem value="На тест" onClick={(event) => this.assignCategory(event)}>На тест</DropdownItem>
+                  <DropdownItem value="Согласование" onClick={(event) => this.assignCategory(event)}>Согласование</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              <span>{this.state.category}</span>
           </div>
+          <hr/>
           <div>
             <div>
-              <strong>Task:</strong>
+              <strong style={{color: '#FFFFFF'}}>Название:</strong>
               <Button
                 outline
                 className="fa fa-pencil"
@@ -229,13 +233,13 @@ class Task extends Component {
               >
               </Button>
             </div>
-            <div>{ title }</div>
+            <div className="name-field">{ title }</div>
           </div>
           <hr/>
           <FormGroup>
             {/* <Label for="descriptionText"><strong>Description:</strong></Label> */}
             <div>
-              <strong>Description:</strong>
+              <strong style={{color: '#FFFFFF'}}>Описание:</strong>
               <Button
                 outline
                 className="fa fa-pencil"
@@ -246,11 +250,11 @@ class Task extends Component {
               >
               </Button>
             </div>
-            <div><pre>{ description }</pre></div>
+            <div className="name-field"><pre>{ description }</pre></div>
           </FormGroup>
           <hr/>
           <div>
-            <strong>Attached files: </strong>
+            <strong style={{color: '#FFFFFF'}}>Прикрепленные файлы: </strong>
             <div>
               {
                 attached ?
@@ -278,14 +282,14 @@ class Task extends Component {
                 <p>Try dropping some files here, or click to select files to upload.</p>
               </Dropzone>
             </div>
-            <aside>
+            {/*<aside>
               <h2>Dropped files</h2>
               <ul>
                 {
                   this.state.files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
                 }
               </ul>
-            </aside>
+            </aside>*/}
           </section>
           <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
             <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>

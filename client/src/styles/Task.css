@@ -1,0 +1,105 @@
+.block-task-container {
+	width: 90%;
+	margin: 70px auto;
+	-webkit-box-shadow: 9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	-moz-box-shadow:    9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	box-shadow:         9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
+	-webkit-border-radius: 1rem;
+	border-radius: 1rem;
+	text-align: center;
+	padding-bottom: 20px;
+}
+.task-button-back {
+	text-align: right;
+	padding: 0.5rem;
+}
+.task-button-back a{
+	background: #45E1BD;
+	padding: 0.25rem 0.5rem;
+	-webkit-border-radius: 0.25rem;
+	border-radius: 0.25rem;
+	color: #3D4149;
+	font-weight: bold;
+	font-size: 14px;
+}
+.block-Dropdown {
+	width: 50%;
+	display: inline-block;
+}
+.block-Dropdown .dropdown {
+	margin-bottom: 5px;
+	text-align: center;
+}
+.block-Dropdown button{
+	background-color: #3F424A;
+	color: #FFFFFF;
+	border: none;
+	width: 100px;
+	font-size: 16px;
+	-webkit-box-shadow: 2px 3px 10px 0px rgba(0, 0, 0, 0.25), inset 0px 0px 10px 0px rgba(255, 255, 255, 0.25);
+	-moz-box-shadow:    2px 3px 10px 0px rgba(0, 0, 0, 0.25), inset 0px 0px 10px 0px rgba(255, 255, 255, 0.25);
+	box-shadow:         2px 3px 10px 0px rgba(0, 0, 0, 0.25), inset 0px 0px 10px 0px rgba(255, 255, 255, 0.25);
+}
+.block-Dropdown button:hover{
+	background-color: #3F424A;
+}
+.block-Dropdown button:active{
+	background-color: #3F424A;
+    border: none!important;
+}
+.block-Dropdown .dropdown-menu {
+	background: #000000;
+}
+.block-Dropdown .dropdown-menu button{
+	background: #000000;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+.block-Dropdown .dropdown-menu button:hover{
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+.dropdown-menu {
+	top: 30px;
+	left: 50%;
+	-webkit-transform: translate(-50%,0%);
+	-ms-transform: translate(-50%,0%);
+	transform: translate(-50%,0%);
+}
+.block-Dropdown span {
+	display: inline-block;
+	color: #FFFFFF;
+	width: 100px;
+	font-size: 14px;
+	background: #2C3037;
+	padding: 0.25rem 0.5rem;
+	margin-top: 0.25rem;
+	-webkit-border-radius: 0.25rem;
+	border-radius: 0.25rem;
+	-webkit-box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.4), 1px 1px 1px 0px rgba(255, 255, 255, 0.5);
+	-moz-box-shadow:    inset 1px 1px 3px 0px rgba(0, 0, 0, 0.4), 1px 1px 1px 0px rgba(255, 255, 255, 0.5);
+	box-shadow:         inset 1px 1px 3px 0px rgba(0, 0, 0, 0.4), 1px 1px 1px 0px rgba(255, 255, 255, 0.5);
+}
+.name-field {
+	width: 60%;
+	margin: 5px auto;
+	background: #2C3037;
+	-webkit-border-radius: 0.25rem;
+	border-radius: 0.25rem;
+	text-align: left;
+	color: #FFFFFF;
+	padding: 0.25rem 0.5rem;
+	-webkit-box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.4), 1px 1px 1px 0px rgba(255, 255, 255, 0.5);
+	-moz-box-shadow:    inset 1px 1px 3px 0px rgba(0, 0, 0, 0.4), 1px 1px 1px 0px rgba(255, 255, 255, 0.5);
+	box-shadow:         inset 1px 1px 3px 0px rgba(0, 0, 0, 0.4), 1px 1px 1px 0px rgba(255, 255, 255, 0.5);
+}
+.name-field pre{
+	color: #FFFFFF;
+	white-space: normal;
+	text-align: justify;
+	margin-bottom: 0rem;
+}
+.dropzone div:first-child {
+	margin: 0 auto;
+}

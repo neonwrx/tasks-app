@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { goalRef } from '../firebase';
 import '../styles/AddGoal.css';
+import moment from 'moment';
+import 'moment/locale/ru';
 
 class AddGoal extends Component {
   constructor(props) {
@@ -18,22 +20,24 @@ class AddGoal extends Component {
   }
 
   addGoal() {
-    let d = new Date();
-    function formatDate(date) {
-      let dd = date.getDate();
-      if (dd < 10) dd = '0' + dd;
-      let month = ["Янв", "Фев", "Март", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
-      let yy = date.getFullYear();
-      let hh = date.getHours();
-      let mm = date.getMinutes();
-      if (mm < 10) mm = '0' + mm;
-
-      return dd + ' ' + month[date.getMonth()] + ' ' + yy + ' | ' + hh + ':' + mm;
-    };
+    // let d = new Date();
+    // function formatDate(date) {
+    //   let dd = date.getDate();
+    //   if (dd < 10) dd = '0' + dd;
+    //   let month = ["Янв", "Фев", "Март", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
+    //   let yy = date.getFullYear();
+    //   let hh = date.getHours();
+    //   let mm = date.getMinutes();
+    //   if (mm < 10) mm = '0' + mm;
+    //
+    //   return dd + ' ' + month[date.getMonth()] + ' ' + yy + ' | ' + hh + ':' + mm;
+    // };
+    let date = moment();
     // console.log('this', this);
     const { title } = this.state;
     const { email } = this.props.user;
-    goalRef.push({creator: email, title, created: formatDate(d)});
+    // goalRef.push({creator: email, title, created: formatDate(d)});
+    goalRef.push({creator: email, title, created: date.locale('ru').format('LLL'), status: 'Новое'});
     this.refs.addInput.value = '';
   }
 

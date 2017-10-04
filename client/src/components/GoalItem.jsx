@@ -12,7 +12,6 @@ class GoalItem extends Component {
       dropdownOpen: false,
       changeStatus: false,
       title: '',
-      assigned: '',
       status: ''
     }
 
@@ -25,10 +24,10 @@ class GoalItem extends Component {
   componentDidMount() {
     goalRef.on('value', snap => {
       snap.forEach(goal => {
-        const { title, assigned, status } = goal.val();
+        const { title, status } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.goal.serverKey) {
-          this.setState({ title: title, assigned: assigned, status: status });
+          this.setState({ title: title, status: status });
         }
       })
     });
@@ -54,7 +53,11 @@ class GoalItem extends Component {
 
   assignTask(event) {
     const { serverKey } = this.props.goal;
-    goalRef.child(serverKey).update({assigned: event.target.parentNode.value});
+    if (event.target.tagName === 'BUTTON') {
+      goalRef.child(serverKey).update({assigned: event.target.value});
+    } else {
+      goalRef.child(serverKey).update({assigned: event.target.parentNode.value});
+    }
   }
 
   deleteTask() {
@@ -78,7 +81,7 @@ class GoalItem extends Component {
         <td>
           {
             this.props.users
-              .filter(user => user.email === this.state.assigned)
+              .filter(user => user.email === this.props.goal.assigned)
               .map((user, index) => {
                 return(
                   <span style={{width: 'auto'}} key={index}>
@@ -113,7 +116,7 @@ class GoalItem extends Component {
             <DropdownToggle
               caret
               outline
-              color="primary"
+              color="info"
               size="sm"
             >
               Add for ...

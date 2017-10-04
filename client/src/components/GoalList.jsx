@@ -6,20 +6,23 @@ import GoalItem from './GoalItem';
 import { Button, Table, InputGroup, InputGroupButton, Input, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import 'moment/locale/ru';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import '../styles/GoalList.css';
 
 class GoalList extends Component {
   constructor(props) {
     super(props);
+    moment.locale('ru');
     this.state = {
       searchString: '',
       searchBy: 'title',
       searchPlaceholder: 'Введите название',
       dropdownOpen: false,
-      startDate: moment(),
-      endDate: moment().add(1, 'weeks'),
-      todayString: moment(new Date()).format('LLLL')
+      startDate: moment().subtract(1, 'weeks'),
+      endDate: moment(),
+      todayString: moment(new Date()).format('LL'),
+      pressed: false
     };
     this.handleChangeStart = this.handleChangeStart.bind(this);
     this.handleChangeEnd = this.handleChangeEnd.bind(this);
@@ -62,7 +65,8 @@ class GoalList extends Component {
   }
 
   searchToday() {
-    console.log('searchToday', this.state.todayString);
+    this.setState({searchBy: 'date', pressed: !this.state.pressed});
+    console.log('this.state.startDate', this.state.startDate);
   }
 
   handleChange(e) {
@@ -87,6 +91,7 @@ class GoalList extends Component {
     // console.log('this.props.goals', this.props.goals);
     let goalslist = this.props.goals,
         searchString = this.state.searchString.trim().toLowerCase(),
+        todaySearchString = this.state.todayString.trim().toLowerCase(),
         searchBy = this.state.searchBy;
 
     if (searchBy === 'title') {
@@ -99,6 +104,12 @@ class GoalList extends Component {
       if (searchString.length > 0) {
         goalslist = goalslist.filter((goal) => {
           return goal.creator.toLowerCase().match( searchString );
+        });
+      }
+    } else if ((searchBy === 'date') && this.state.pressed) {
+      if (todaySearchString.length > 0) {
+        goalslist = goalslist.filter((goal) => {
+          return goal.created.toLowerCase().match( todaySearchString );
         });
       }
     }
@@ -114,6 +125,7 @@ class GoalList extends Component {
                   outline
                   color="info"
                   onClick={this.searchToday}
+                  style={{background: `${this.state.pressed ? '#5bc0de' : 'none'}`, color: `${this.state.pressed ? '#fff' : '#5bc0de'}`}}
                 >
                   За сегодня
                 </Button>
@@ -148,7 +160,7 @@ class GoalList extends Component {
               />
               <InputGroupButton>
                 <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleSearch}>
-                  <DropdownToggle caret outline color="primary">
+                  <DropdownToggle caret outline color="info">
                     Поиск по
                   </DropdownToggle>
                   <DropdownMenu right>
