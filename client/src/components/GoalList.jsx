@@ -36,9 +36,9 @@ class GoalList extends Component {
     goalRef.on('value', snap => {
       let goals = [];
       snap.forEach(goal => {
-        const { creator, title, assigned, description, attached, created, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, created, category } = goal.val();
         const serverKey = goal.key;
-        goals.push({ creator, title, assigned, description, attached, created, category, serverKey });
+        goals.push({ creator, title, assigned, description, status, attached, created, category, serverKey });
       })
       this.props.setGoals(goals);
     });
@@ -66,7 +66,7 @@ class GoalList extends Component {
 
   searchToday() {
     this.setState({searchBy: 'date', pressed: !this.state.pressed});
-    console.log('this.state.startDate', this.state.startDate);
+    // console.log('this.state.endDate', this.state.endDate.format('LL'));
   }
 
   handleChange(e) {
@@ -116,8 +116,8 @@ class GoalList extends Component {
 
     return (
       <div>
-        <div className="row justify-content-end" style={{marginBottom: '8px'}}>
-          <div className="col-lg-4 offset-lg-4 align-self-end">
+        <div className="row" style={{marginBottom: '8px'}}>
+          <div className="col-lg-4 offset-lg-5">
             <div className="datepicker">
               <div>
                 <Button
@@ -149,7 +149,7 @@ class GoalList extends Component {
               />
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <InputGroup>
               <Input
                 value={this.state.searchString}

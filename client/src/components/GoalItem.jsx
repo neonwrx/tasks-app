@@ -75,13 +75,13 @@ class GoalItem extends Component {
 
   render() {
     // console.log('this.props.goal', this.props.goal);
-    const { creator, title, created, category, serverKey } = this.props.goal;
+    const { creator, assigned, title, created, category, serverKey } = this.props.goal;
     return (
       <tr>
         <td>
           {
             this.props.users
-              .filter(user => user.email === this.props.goal.assigned)
+              .filter(user => user.email === assigned)
               .map((user, index) => {
                 return(
                   <span style={{width: 'auto'}} key={index}>
@@ -94,7 +94,18 @@ class GoalItem extends Component {
         <td className="tasks__title">
           <Link to={`/tasks/${serverKey}`}><strong style={{color: '#F86F71'}}>{title}</strong></Link>
         </td>
-        <td><em style={{color: '#CB98ED'}}>{creator}</em></td>
+        <td>
+          {
+            this.props.users
+              .filter(user => user.email === creator)
+              .map((user, index) => {
+                return(
+                  <span key={index} style={{marginRight: '5px'}}>{user.name}</span>
+                )
+            })
+          }
+          <em style={{color: '#CB98ED'}}>{creator}</em>
+        </td>
         <td>{created}</td>
         <td>
           {(() => {
@@ -145,11 +156,14 @@ class GoalItem extends Component {
             onClick={this.toggle}
           >
           </Button>
-          <button style={{marginLeft: '5px'}}
-            className="btn btn-sm btn-danger fa fa-times"
+          <Button
+            color="danger"
+            size="sm"
+            style={{marginLeft: '5px'}}
+            className="fa fa-times"
             onClick={()=> this.deleteTask()}
           >
-          </button>
+          </Button>
         </td>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Change task title</ModalHeader>

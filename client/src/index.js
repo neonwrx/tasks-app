@@ -17,6 +17,7 @@ import App from './components/App';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Task from './components/Task';
+import CompleteTask from './components/CompleteTask';
 import TasksList from './components/TasksList';
 import CompleteGoalList from './components/CompleteGoalList';
 
@@ -67,6 +68,7 @@ ReactDOM.render(
         <Route path="/mytaskslist" component={TasksList} />
         <Route path="/completedtasks" component={CompleteGoalList} />
         <Route path="/tasks/:id" component={Task} />
+        <Route path="/completetasks/:id" component={CompleteTask} />
       </div>
     </ConnectedRouter>
   </Provider>, document.getElementById('root')

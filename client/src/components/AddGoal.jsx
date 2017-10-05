@@ -37,7 +37,7 @@ class AddGoal extends Component {
     const { title } = this.state;
     const { email } = this.props.user;
     // goalRef.push({creator: email, title, created: formatDate(d)});
-    goalRef.push({creator: email, title, created: date.locale('ru').format('LLL'), status: 'Новое'});
+    goalRef.push({creator: email, title, created: date.locale('ru').format('LLL'), status: 'Новое', category: '', description: '', attached: ''});
     this.refs.addInput.value = '';
   }
 
