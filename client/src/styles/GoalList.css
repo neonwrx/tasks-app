@@ -30,7 +30,7 @@
   align-items: center;
   justify-content: flex-end;
 }
-.datepicker > div:nth-child(-n+3) {
+.datepicker > div:nth-child(-n+4) {
   display: inline;
   margin: 0 5px;
 }

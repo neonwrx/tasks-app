@@ -75,7 +75,7 @@ class GoalItem extends Component {
 
   render() {
     // console.log('this.props.goal', this.props.goal);
-    const { creator, assigned, title, created, category, serverKey } = this.props.goal;
+    const { creator, assigned, title, created, category, status, serverKey } = this.props.goal;
     return (
       <tr>
         <td>
@@ -116,7 +116,7 @@ class GoalItem extends Component {
 
             } else {
               return (
-                <span onClick={() => this.changeStatus()}>{this.state.status}</span>
+                <span onClick={() => this.changeStatus()}>{status}</span>
               )
             }
           })()}
@@ -134,7 +134,9 @@ class GoalItem extends Component {
             </DropdownToggle>
             <DropdownMenu>
               {
-                this.props.users.map((user, index) => {
+                this.props.users
+                .filter(user => user.avatar)
+                .map((user, index) => {
                   return (
                     <DropdownItem key={index} value={user.email} onClick={(event) => this.assignTask(event)}>
                       <img className="avatar" value={user.email} src={require('../../uploads/avatars/' + user.avatar)} alt="" style={{marginRight: '8px'}} />

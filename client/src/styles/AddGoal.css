@@ -35,12 +35,13 @@ a:hover {
 .form-inline .form-control {
 	width: 250px;
 }
-.form-group-title{
+.form-group-title {
 	width: 100%;
 	line-height: 1;
-	padding-bottom: 3px;
+	padding-bottom: 5px;
+	text-align: left;
 }
-.form-group-addgoal input{
+.form-group-addgoal input {
 	background: #F3FBE3;
 	-webkit-box-shadow: 4px 7px 6px 0px rgba(0, 0, 0, 0.14);
 	-moz-box-shadow:    4px 7px 6px 0px rgba(0, 0, 0, 0.14);

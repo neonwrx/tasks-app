@@ -195,8 +195,9 @@ class Task extends Component {
                 </DropdownToggle>
                 <DropdownMenu>
                   <DropdownItem value="Новое" onClick={(event) => this.assignStatus(event)}>Новое</DropdownItem>
+                  <DropdownItem value="Проверено" onClick={(event) => this.assignStatus(event)}>Проверено</DropdownItem>
+                  <DropdownItem value="На доработке" onClick={(event) => this.assignStatus(event)}>На доработке</DropdownItem>
                   <DropdownItem value="В работе" onClick={(event) => this.assignStatus(event)}>В работе</DropdownItem>
-                  <DropdownItem value="На проверке" onClick={(event) => this.assignStatus(event)}>На проверку</DropdownItem>
                   <DropdownItem value="Выполнено" onClick={(event) => this.assignStatus(event)}>Выполнено</DropdownItem>
                 </DropdownMenu>
               </Dropdown>

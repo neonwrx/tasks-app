@@ -20,25 +20,13 @@ class AddGoal extends Component {
   }
 
   addGoal() {
-    // let d = new Date();
-    // function formatDate(date) {
-    //   let dd = date.getDate();
-    //   if (dd < 10) dd = '0' + dd;
-    //   let month = ["Янв", "Фев", "Март", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
-    //   let yy = date.getFullYear();
-    //   let hh = date.getHours();
-    //   let mm = date.getMinutes();
-    //   if (mm < 10) mm = '0' + mm;
-    //
-    //   return dd + ' ' + month[date.getMonth()] + ' ' + yy + ' | ' + hh + ':' + mm;
-    // };
     let date = moment();
-    // console.log('this', this);
     const { title } = this.state;
     const { email } = this.props.user;
-    // goalRef.push({creator: email, title, created: formatDate(d)});
-    goalRef.push({creator: email, title, created: date.locale('ru').format('LLL'), status: 'Новое', category: '', description: '', attached: ''});
-    this.refs.addInput.value = '';
+    if (this.refs.addInput.value) {
+      goalRef.push({creator: email, title, created: date.locale('ru').format('LLL'), status: 'Новое', category: '', description: '', attached: ''});
+      this.refs.addInput.value = '';
+    }
   }
 
   render() {

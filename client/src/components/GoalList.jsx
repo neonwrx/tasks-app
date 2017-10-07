@@ -19,17 +19,22 @@ class GoalList extends Component {
       searchBy: 'title',
       searchPlaceholder: 'Введите название',
       dropdownOpen: false,
-      startDate: moment().subtract(1, 'weeks'),
+      statusDropdownOpen: false,
+      startDate: moment().subtract(6, 'days'),
       endDate: moment(),
+      dateRange: [],
       todayString: moment(new Date()).format('LL'),
+      status: '',
       pressed: false
     };
     this.handleChangeStart = this.handleChangeStart.bind(this);
     this.handleChangeEnd = this.handleChangeEnd.bind(this);
     this.searchToday = this.searchToday.bind(this);
     this.toggleSearch = this.toggleSearch.bind(this);
+    this.toggleStatus = this.toggleStatus.bind(this);
     this.searchType1 = this.searchType1.bind(this);
     this.searchType2 = this.searchType2.bind(this);
+    this.sortByStatus = this.sortByStatus.bind(this);
   }
 
   componentDidMount() {
@@ -67,6 +72,18 @@ class GoalList extends Component {
   searchToday() {
     this.setState({searchBy: 'date', pressed: !this.state.pressed});
     // console.log('this.state.endDate', this.state.endDate.format('LL'));
+    let startDate = moment(this.state.startDate);
+    let endDate = moment(this.state.endDate);
+    let count = startDate.from(endDate, true).substring(0,1);
+    let dates = [startDate.format('LL')];
+    for ( let i = 0; i < count; i++) {
+      dates.push(startDate.add(1, 'days').format('LL'));
+    }
+    // dates = [...dates, [this.state.startDate.add(1, 'days').format('LL')]];
+    // dates.push(this.state.startDate.add(1, 'days').format('LL'));
+    console.log('dates', dates);
+    // console.log('startDate', startDate.format('LL').trim().toLowerCase());
+    // console.log('startDate', startDate.subtract(1, 'days').format('LL').trim().toLowerCase());
   }
 
   handleChange(e) {
@@ -77,6 +94,19 @@ class GoalList extends Component {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
     });
+  }
+
+  toggleStatus() {
+    this.setState({
+      statusDropdownOpen: !this.state.statusDropdownOpen
+    });
+  }
+
+  sortByStatus(event) {
+    this.setState({
+      status: event.target.value,
+      searchBy: 'status'
+    })
   }
 
   searchType1(event) {
@@ -92,6 +122,7 @@ class GoalList extends Component {
     let goalslist = this.props.goals,
         searchString = this.state.searchString.trim().toLowerCase(),
         todaySearchString = this.state.todayString.trim().toLowerCase(),
+        status = this.state.status.trim().toLowerCase(),
         searchBy = this.state.searchBy;
 
     if (searchBy === 'title') {
@@ -112,6 +143,12 @@ class GoalList extends Component {
           return goal.created.toLowerCase().match( todaySearchString );
         });
       }
+    } else if (searchBy === 'status') {
+      if (status.length > 0) {
+        goalslist = goalslist.filter((goal) => {
+          return goal.status.toLowerCase().match( status );
+        });
+      }
     }
 
     return (
@@ -119,6 +156,20 @@ class GoalList extends Component {
         <div className="row" style={{marginBottom: '8px'}}>
           <div className="col-lg-4 offset-lg-5">
             <div className="datepicker">
+              <ButtonDropdown isOpen={this.state.statusDropdownOpen} toggle={this.toggleStatus} style={{marginRight: '10px'}}>
+                <DropdownToggle color="success" outline caret>
+                  Статус
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem value="Новое" onClick={(event) => this.sortByStatus(event)}>Новое</DropdownItem>
+                  <DropdownItem value="Проверено" onClick={(event) => this.sortByStatus(event)}>Проверено</DropdownItem>
+                  <DropdownItem value="На доработке" onClick={(event) => this.sortByStatus(event)}>На доработке</DropdownItem>
+                  <DropdownItem value="В работе" onClick={(event) => this.sortByStatus(event)}>В работе</DropdownItem>
+                  <DropdownItem value="Выполнено" onClick={(event) => this.sortByStatus(event)}>Выполнено</DropdownItem>
+                  <DropdownItem divider />
+                  <DropdownItem value="" onClick={(event) => this.sortByStatus(event)}>Все</DropdownItem>
+                </DropdownMenu>
+              </ButtonDropdown>
               <div>
                 <Button
                   className="day-button"
