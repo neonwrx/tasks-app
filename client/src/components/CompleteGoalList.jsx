@@ -26,9 +26,9 @@ class CompleteGoalList extends Component {
     completeGoalRef.on('value', snap => {
       let completeGoals = [];
       snap.forEach(completeGoal => {
-        const { email, title, assigned, description, status, attached, created, category } = completeGoal.val();
+        const { email, title, assigned, description, status, attached, message, created, category } = completeGoal.val();
         const serverKey = completeGoal.key;
-        completeGoals.push({email, title, assigned, description, status, attached, created, category, serverKey})
+        completeGoals.push({email, title, assigned, description, status, attached, message, created, category, serverKey})
       })
       this.props.setCompleted(completeGoals);
     })

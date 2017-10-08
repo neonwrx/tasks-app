@@ -170,7 +170,7 @@ class Task extends Component {
 
   render() {
     const { name, email } = this.props.user;
-    const { title, description, attached } = this.props.task;
+    const { title, description, attached, message } = this.props.task;
     // console.log('task', this.props.task.title);
     return(
       <div>
@@ -292,6 +292,12 @@ class Task extends Component {
               </ul>
             </aside>*/}
           </section>
+          <hr/>
+          <div>
+            {message}
+            <br/>
+            {name} изменил статус на "{this.state.status}"
+          </div>
           <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
             <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>
             <ModalBody>
