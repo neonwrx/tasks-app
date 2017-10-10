@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { goalRef } from '../firebase';
+import { goalRef, completeGoalRef } from '../firebase';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 class GoalItem extends Component {
@@ -71,6 +71,13 @@ class GoalItem extends Component {
     this.setState({
       modal: !this.state.modal
     });
+  }
+
+  completeGoal() {
+    const { email } = this.props.user;
+    const { assigned, category, created, creator, description, status, message, title, serverKey } = this.props.goal;
+    goalRef.child(serverKey).remove();
+    completeGoalRef.push({email, assigned, category, created, creator, description, status, message, title});
   }
 
   render() {
@@ -165,6 +172,15 @@ class GoalItem extends Component {
             className="fa fa-times"
             onClick={()=> this.deleteTask()}
           >
+          </Button>
+          <Button
+            outline
+            color="success"
+            size="sm"
+            style={{marginLeft: '5px'}}
+            onClick={() => this.completeGoal()}
+          >
+            Завершить
           </Button>
         </td>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>

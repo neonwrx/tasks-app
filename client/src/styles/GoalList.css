@@ -4,6 +4,7 @@
   color: #fff;
   border-bottom: 0px solid #eceeef;
   border-top: none;
+  cursor: pointer;
 }
 .tasks td {
   border-top: 1px solid #4f535d;
@@ -40,4 +41,18 @@
 .day-button {
   padding-left: .3rem;
   padding-right: .3rem;
+}
+
+.is--active {
+  color: #000;
+}
+.is--asc:before {
+  position: absolute;
+  margin-left: -16px;
+  content: "▲";
+}
+.is--desc:before {
+  position: absolute;
+  margin-left: -16px;
+  content: "▼";
 }

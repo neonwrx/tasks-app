@@ -176,9 +176,9 @@ class PersonalTask extends Component {
             size="sm"
             style={{marginLeft: '5px'}}
             onClick={() => this.completeGoal()}
-            >
-              Завершить
-            </Button>
+          >
+            Завершить
+          </Button>
         </td>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Change task title</ModalHeader>

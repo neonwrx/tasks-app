@@ -103,7 +103,7 @@ class Task extends Component {
     const { serverKey } = this.props.task;
     if (this.refs.descriptionInput) {
       goalRef.child(serverKey).update({description: this.state.description});
-      console.log('what', this.state.description);
+      // console.log('what', this.state.description);
     }
     this.setState({
       modal2: !this.state.modal2
@@ -169,7 +169,7 @@ class Task extends Component {
   }
 
   render() {
-    const { name, email } = this.props.user;
+    // const { name, email } = this.props.user;
     const { title, description, attached, message } = this.props.task;
     // console.log('task', this.props.task.title);
     return(
@@ -179,9 +179,9 @@ class Task extends Component {
           <div className="task-button-back">
             <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Закрыть</Link>
           </div>
-          <h4 style={{color: '#FFFFFF'}}>
+          {/* <h4 style={{color: '#FFFFFF'}}>
             Task for <span><em>{ name }</em></span><span> ({ email })</span>
-          </h4>
+          </h4> */}
           <br/>
           <div className="block-Dropdown">
             <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
@@ -296,7 +296,7 @@ class Task extends Component {
           <div>
             {message}
             <br/>
-            {name} изменил статус на "{this.state.status}"
+            {/* {name} изменил статус на "{this.state.status}" */}
           </div>
           <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
             <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>

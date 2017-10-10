@@ -25,7 +25,9 @@ class GoalList extends Component {
       dateRange: [],
       todayString: moment(new Date()).format('LL'),
       status: '',
-      pressed: false
+      pressed: false,
+      orderBy: undefined,
+      orderAsc: false
     };
     this.handleChangeStart = this.handleChangeStart.bind(this);
     this.handleChangeEnd = this.handleChangeEnd.bind(this);
@@ -55,6 +57,28 @@ class GoalList extends Component {
       })
       this.props.setUsers(users);
     })
+  }
+
+  sort(a, b) {
+    const index = this.state.orderBy;
+    if (index === 1) {
+      return (this.state.orderAsc ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title));
+    } else if (index === 2) {
+      return (this.state.orderAsc ? a.creator.localeCompare(b.creator) : b.creator.localeCompare(a.creator));
+    } else if (index === 3) {
+      return (this.state.orderAsc ? a.created.localeCompare(b.created) : b.created.localeCompare(a.created));
+    } else if (index === 4) {
+      return (this.state.orderAsc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status));
+    } else if (index === 5) {
+      return (this.state.orderAsc ? a.category.localeCompare(b.category) : b.category.localeCompare(a.category));
+    }
+  }
+
+  handleClick(index) {
+    this.setState({
+      orderBy: index,
+      orderAsc: (this.state.orderBy === index) ? !this.state.orderAsc : this.state.orderAsc
+    });
   }
 
   handleChangeStart(date) {
@@ -118,8 +142,9 @@ class GoalList extends Component {
   }
 
   render() {
+    const headers = ["","Название","Создал","Дата создания","Статус","Категория","Действие"];
     // console.log('this.props.goals', this.props.goals);
-    let goalslist = this.props.goals,
+    let goalslist = (this.state.orderBy === undefined) ? this.props.goals : this.props.goals.sort(this.sort.bind(this)),
         searchString = this.state.searchString.trim().toLowerCase(),
         todaySearchString = this.state.todayString.trim().toLowerCase(),
         status = this.state.status.trim().toLowerCase(),
@@ -226,13 +251,21 @@ class GoalList extends Component {
         <Table hover className="tasks" size="sm">
           <thead>
             <tr>
-              <th></th>
+              {
+                headers.map((header, index) => {
+                  const isSelected = (index === this.state.orderBy);
+                  const arrow = (isSelected ? (this.state.orderAsc ? "is--asc" : "is--desc") : "");
+                  const classes = `${isSelected ? `is--active ${arrow}` : ""}`
+                  return (<th className={classes} key={index} onClick={this.handleClick.bind(this, index)}>{header}</th>);
+                })
+              }
+              {/* <th></th>
               <th className="tasks__title">Название</th>
               <th>Создал</th>
               <th>Дата создания</th>
               <th>Статус</th>
               <th>Категория</th>
-              <th className="tasks__edit">Действие</th>
+              <th className="tasks__edit">Действие</th> */}
             </tr>
           </thead>
           <tbody>
