@@ -23,7 +23,7 @@ class GoalList extends Component {
       startDate: moment().subtract(6, 'days'),
       endDate: moment(),
       dateRange: [],
-      todayString: moment(new Date()).format('LL'),
+      todayString: moment(new Date()).format('DD MMMM YYYY'),
       status: '',
       pressed: false,
       orderBy: undefined,
@@ -99,13 +99,14 @@ class GoalList extends Component {
     let startDate = moment(this.state.startDate);
     let endDate = moment(this.state.endDate);
     let count = startDate.from(endDate, true).substring(0,1);
-    let dates = [startDate.format('LL')];
+    let dates = [startDate.format('DD MMMM YYYY')];
     for ( let i = 0; i < count; i++) {
-      dates.push(startDate.add(1, 'days').format('LL'));
+      dates.push(startDate.add(1, 'days').format('DD MMMM YYYY'));
     }
     // dates = [...dates, [this.state.startDate.add(1, 'days').format('LL')]];
     // dates.push(this.state.startDate.add(1, 'days').format('LL'));
     console.log('dates', dates);
+    console.log('moment', moment().subtract(4, 'days').format('DD MMMM YYYY г. HH:mm'));
     // console.log('startDate', startDate.format('LL').trim().toLowerCase());
     // console.log('startDate', startDate.subtract(1, 'days').format('LL').trim().toLowerCase());
   }

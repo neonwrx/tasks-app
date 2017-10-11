@@ -251,7 +251,7 @@ class Task extends Component {
               >
               </Button>
             </div>
-            <div className="name-field"><pre>{ description }</pre></div>
+            <div className="name-field"><pre>{description}</pre></div>
           </FormGroup>
           <hr/>
           <div>
@@ -261,8 +261,11 @@ class Task extends Component {
                 attached ?
                   attached.split(",").map((file, index) => {
                     return (
-                      <div key={index} style={{marginBottom: '5px'}}>
-                        <a href={'/uploads/' + file} download>{file}</a>
+                      <div key={index} style={{marginBottom: '5px'}} className="attachedFile">
+                        <a href={'/uploads/' + file} download>
+                          <img src={require('../images/icon_rar.svg')} alt=""/>
+                          {file}
+                        </a>
                         <Button
                           className="fa fa-times"
                           color="danger"
