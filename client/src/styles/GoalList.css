@@ -56,3 +56,19 @@
   margin-left: -16px;
   content: "▼";
 }
+
+.status--new {
+  color: #868e96;
+}
+.status--verified {
+  color: #5bc0de;
+}
+.status--on-complection {
+  color: #ffc107;
+}
+.status--work {
+  color: #007bff;
+}
+.status--done {
+  color: #28a745;
+}

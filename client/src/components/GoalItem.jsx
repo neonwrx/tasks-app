@@ -8,7 +8,8 @@ class GoalItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modal: false,
+      modal1: false,
+      modal2: false,
       dropdownOpen: false,
       changeStatus: false,
       title: '',
@@ -16,6 +17,7 @@ class GoalItem extends Component {
     }
 
     this.toggle = this.toggle.bind(this);
+    this.toggleDelete = this.toggleDelete.bind(this);
     this.toggleAssigment = this.toggleAssigment.bind(this);
     this.assignTask = this.assignTask.bind(this);
     this.changeStatus = this.changeStatus.bind(this);
@@ -35,7 +37,13 @@ class GoalItem extends Component {
 
   toggle() {
     this.setState({
-      modal: !this.state.modal
+      modal1: !this.state.modal1
+    });
+  }
+
+  toggleDelete() {
+    this.setState({
+      modal2: !this.state.modal2
     });
   }
 
@@ -63,13 +71,16 @@ class GoalItem extends Component {
   deleteTask() {
     const { serverKey } = this.props.goal;
     goalRef.child(serverKey).remove();
+    this.setState({
+      modal2: !this.state.modal2
+    });
   }
 
   editTask() {
     const { serverKey } = this.props.goal;
     goalRef.child(serverKey).update({title: this.state.title});
     this.setState({
-      modal: !this.state.modal
+      modal1: !this.state.modal1
     });
   }
 
@@ -114,8 +125,8 @@ class GoalItem extends Component {
           <em style={{color: '#CB98ED'}}>{creator}</em>
         </td>
         <td>{created}</td>
-        <td>
-          {(() => {
+        <td className={status === 'Новое' ? 'status--new' : (status === 'Проверено' ? 'status--verified' : (status === 'На доработке' ? 'status--on-complection' : (status === 'В работе' ? 'status--work' : 'status--done')))}>
+          {/* {(() => {
             if (this.state.changeStatus) {
               return (
                 <span onClick={() => this.changeStatus()}>Changed</span>
@@ -126,7 +137,8 @@ class GoalItem extends Component {
                 <span onClick={() => this.changeStatus()}>{status}</span>
               )
             }
-          })()}
+          })()} */}
+          {status}
         </td>
         <td>{category}</td>
         <td className="tasks__edit">
@@ -170,7 +182,7 @@ class GoalItem extends Component {
             size="sm"
             style={{marginLeft: '5px'}}
             className="fa fa-times"
-            onClick={()=> this.deleteTask()}
+            onClick={this.toggleDelete}
           >
           </Button>
           <Button
@@ -183,7 +195,7 @@ class GoalItem extends Component {
             Завершить
           </Button>
         </td>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+        <Modal isOpen={this.state.modal1} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Change task title</ModalHeader>
           <ModalBody>
             <label>Change title of task</label>
@@ -200,6 +212,16 @@ class GoalItem extends Component {
           <ModalFooter>
             <Button color="primary" onClick={()=> this.editTask()}>Update</Button>{' '}
             <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+        <Modal isOpen={this.state.modal2} toggle={this.toggleDelete} className={this.props.className}>
+          <ModalHeader toggle={this.toggleDelete}>Удалить задачу?</ModalHeader>
+          <ModalBody>
+            <label>Вы уверены что хотите удалить задачу, обратного пути уже небудет?</label>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={()=> this.deleteTask()}>Удалить</Button>{' '}
+            <Button color="secondary" onClick={this.toggleDelete}>Отмена</Button>
           </ModalFooter>
         </Modal>
       </tr>

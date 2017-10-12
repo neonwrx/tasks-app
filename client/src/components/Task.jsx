@@ -263,8 +263,31 @@ class Task extends Component {
                     return (
                       <div key={index} style={{marginBottom: '5px'}} className="attachedFile">
                         <a href={'/uploads/' + file} download>
-                          <img src={require('../images/icon_rar.svg')} alt=""/>
-                          {file}
+                        {(() => {
+                          let ext = file.split('.').pop();
+                          switch (ext) {
+                            case 'zip':
+                              return <img src={require('../images/icon_zip.svg')} alt=""/>
+                              break; // eslint-disable-line no-unreachable
+                            case 'rar':
+                              return <img src={require('../images/icon_rar.svg')} alt=""/>
+                              break; // eslint-disable-line no-unreachable
+                            case 'gif':
+                              return <img src={require('../images/icon_gif.svg')} alt=""/>
+                              break; // eslint-disable-line no-unreachable
+                            case 'psd':
+                              return <img src={require('../images/icon_psd.svg')} alt=""/>
+                              break; // eslint-disable-line no-unreachable
+                            case 'png':
+                            case 'jpg':
+                              // return <img src={require(`../../../uploads/${file}`)} alt=""/>
+                              return <img src={'/uploads/' + file} alt=""/>
+                              break; // eslint-disable-line no-unreachable
+                            default:
+                              return <img src={require('../images/icon_other.svg')} alt=""/>
+                          }
+                        })()}
+                          <span>{file}</span>
                         </a>
                         <Button
                           className="fa fa-times"
@@ -276,14 +299,14 @@ class Task extends Component {
                         </Button>
                       </div>
                     )
-                  }) : 'No attached files'
+                  }) : 'Нет прикрепленных файлов'
               }
             </div>
           </div>
           <section>
             <div className="dropzone">
               <Dropzone onDrop={this.onDrop.bind(this)}>
-                <p>Try dropping some files here, or click to select files to upload.</p>
+                <p>Перетащите файлы сюда или нажмите для загрузки файлов</p>
               </Dropzone>
             </div>
             {/*<aside>

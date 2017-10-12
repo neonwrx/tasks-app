@@ -258,8 +258,11 @@ class CompleteTask extends Component {
                 attached ?
                   attached.split(",").map((file, index) => {
                     return (
-                      <div key={index} style={{marginBottom: '5px'}}>
-                        <a href={'/uploads/' + file} download>{file}</a>
+                      <div key={index} style={{marginBottom: '5px'}} className="attachedFile">
+                        <a href={'/uploads/' + file} download>
+                          <img src={require('../images/icon_rar.svg')} alt=""/>
+                          <span>{file}</span>
+                        </a>
                         <Button
                           className="fa fa-times"
                           color="danger"
@@ -270,14 +273,14 @@ class CompleteTask extends Component {
                         </Button>
                       </div>
                     )
-                  }) : 'No attached files'
+                  }) : 'Нет прикрепленных файлов'
               }
             </div>
           </div>
           <section>
             <div className="dropzone">
               <Dropzone onDrop={this.onDrop.bind(this)}>
-                <p>Try dropping some files here, or click to select files to upload.</p>
+                <p>Перетащите файлы сюда или нажмите для загрузки файлов</p>
               </Dropzone>
             </div>
             {/*<aside>

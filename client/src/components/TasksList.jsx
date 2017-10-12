@@ -28,6 +28,9 @@ class TasksList extends Component {
         <Header />
         <div style={{margin: '60px 50px'}}>
           <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
+          <hr />
+          <h4 style={{color: '#FFFFFF'}}>Мои задания</h4>
+          <hr />
           <Table hover className="tasks" size="sm">
             <thead>
               <tr>

@@ -5,7 +5,7 @@ import { setCompleted } from '../actions';
 import { completeGoalRef } from '../firebase';
 import Header from './Header';
 import { Link } from 'react-router-dom';
-import { Table } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap';
 
 class CompleteGoalList extends Component {
   static propTypes = {
@@ -13,7 +13,11 @@ class CompleteGoalList extends Component {
   }
 
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = {
+      modal2: false
+    }
+    this.toggleDelete = this.toggleDelete.bind(this);
     this.goToPreviousPage = this.goToPreviousPage.bind(this)
   }
 
@@ -34,6 +38,21 @@ class CompleteGoalList extends Component {
     })
   }
 
+  toggleDelete() {
+    this.setState({
+      modal2: !this.state.modal2
+    });
+  }
+
+  deleteTask() {
+    // const { serverKey } = this.props.completeGoal;
+    // console.log(serverKey);
+    // completeGoalRef.child(serverKey).remove();
+    this.setState({
+      modal2: !this.state.modal2
+    });
+  }
+
   clearCompleted() {
     completeGoalRef.set([]);
   }
@@ -45,7 +64,9 @@ class CompleteGoalList extends Component {
         <Header />
         <div style={{margin: '60px 50px'}}>
           <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
+          <hr/>
           <h4 style={{color: '#FFFFFF'}}>Завершенные задачи</h4>
+          <hr/>
           <Table hover className="tasks" size="sm">
             <thead>
               <tr>
@@ -62,7 +83,7 @@ class CompleteGoalList extends Component {
                 this.props.completeGoals.map((completeGoal, index) => {
                   const { assigned, title, serverKey, email, created, status, category } = completeGoal;
                   return (
-                    <tr key={index}>
+                    <tr key={index} completeGoal={serverKey}>
                       <td>
                         {
                           this.props.users
@@ -94,6 +115,26 @@ class CompleteGoalList extends Component {
                       <td>{created}</td>
                       <td>{status}</td>
                       <td>{category}</td>
+                      <td className="tasks__edit">
+                        <Button
+                          color="danger"
+                          size="sm"
+                          style={{marginLeft: '5px'}}
+                          className="fa fa-times"
+                          onClick={this.toggleDelete}
+                        >
+                        </Button>
+                      </td>
+                      <Modal isOpen={this.state.modal2} toggle={this.toggleDelete} className={this.props.className}>
+                        <ModalHeader toggle={this.toggleDelete}>Удалить задачу?</ModalHeader>
+                        <ModalBody>
+                          <label>Нехер задачи удалять?</label>
+                        </ModalBody>
+                        <ModalFooter>
+                          {/* <Button color="primary" onClick={()=> this.deleteTask()}>Удалить</Button>{' '} */}
+                          <Button color="secondary" onClick={this.toggleDelete}>Отмена</Button>
+                        </ModalFooter>
+                      </Modal>
                     </tr>
                   )
                 })
@@ -101,23 +142,30 @@ class CompleteGoalList extends Component {
             </tbody>
           </Table>
         </div>
-        <button
-          style={{marginTop: '5px'}}
-          className="btn btn-primary"
-          onClick={() => this.clearCompleted()}
-        >
-          Очистить список
-        </button>
+        {(() => {
+          if (this.props.user.email === 'rolexxx91@gmail.com') {
+            return (
+              <button
+                style={{marginTop: '5px'}}
+                className="btn btn-primary"
+                onClick={() => this.clearCompleted()}
+              >
+                Очистить список
+              </button>
+            )
+          }
+        })()}
       </div>
     )
   }
 }
 
 function mapStateToProps(state) {
-  const { completeGoals, users } = state;
+  const { completeGoals, users, user } = state;
   return  {
     completeGoals,
-    users
+    users,
+    user
   }
 }
 
