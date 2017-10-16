@@ -1,8 +1,8 @@
 {
-  "main.css": "static/css/main.8ce059cc.css",
-  "main.css.map": "static/css/main.8ce059cc.css.map",
-  "main.js": "static/js/main.ff2c92ec.js",
-  "main.js.map": "static/js/main.ff2c92ec.js.map",
+  "main.css": "static/css/main.54fa0b04.css",
+  "main.css.map": "static/css/main.54fa0b04.css.map",
+  "main.js": "static/js/main.63c68bf2.js",
+  "main.js.map": "static/js/main.63c68bf2.js.map",
   "static/media/andrey.jpg": "static/media/andrey.755157db.jpg",
   "static/media/anton.jpg": "static/media/anton.22f24eb1.jpg",
   "static/media/evgeniya.jpg": "static/media/evgeniya.966389c9.jpg",
@@ -14,5 +14,6 @@
   "static/media/icon_zip.svg": "static/media/icon_zip.d789edc3.svg",
   "static/media/julia.jpg": "static/media/julia.0d7c4d83.jpg",
   "static/media/sergey.jpg": "static/media/sergey.bdf69206.jpg",
-  "static/media/tanya.jpg": "static/media/tanya.5ee93a9d.jpg"
+  "static/media/tanya.jpg": "static/media/tanya.5ee93a9d.jpg",
+  "static/media/unknown-user.svg": "static/media/unknown-user.5fa718c4.svg"
 }

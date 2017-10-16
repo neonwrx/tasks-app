@@ -16,6 +16,7 @@ import reducer from './reducers';
 import App from './components/App';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
+import Cabinet from './components/Cabinet';
 import Task from './components/Task';
 import CompleteTask from './components/CompleteTask';
 import TasksList from './components/TasksList';
@@ -39,19 +40,23 @@ firebaseApp.auth().onAuthStateChanged(user => {
     userListRef.on('value', snap => {
       let currentUser = {};
       snap.forEach(usr => {
-        const { email, name } = usr.val();
+        const { email, name, avatar, rights } = usr.val();
         const serverKey = usr.key;
         if (email === logEmail) {
           // console.log('test', logEmail);
           currentUser.email = email;
           currentUser.name = name;
+          currentUser.avatar = avatar;
+          currentUser.rights = rights;
           currentUser.serverKey = serverKey;
         }
       });
       store.dispatch(logUser(currentUser));
     });
 
-    history.push('/app');
+    if ((!history.location.pathname.includes('tasks')) && (!history.location.pathname.includes('cabinet'))) {
+      history.push('/app');
+    }
   } else {
     // console.log('user has signed out or still needs to sign in.');
     history.replace('/signin');
@@ -65,6 +70,7 @@ ReactDOM.render(
         <Route exact path="/app" component={App} />
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
+        <Route path="/cabinet" component={Cabinet} />
         <Route path="/mytaskslist" component={TasksList} />
         <Route path="/completedtasks" component={CompleteGoalList} />
         <Route path="/tasks/:id" component={Task} />

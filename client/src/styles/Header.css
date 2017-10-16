@@ -91,6 +91,19 @@
 		-webkit-background-size: 32px auto;
 		background-size: 32px auto;
 	}
+.nav-pills .cabinet-link {
+	padding: 0;
+  font-size: 20px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
+  text-align: center;
+}
+.nav-pills .cabinet-link:active {
+	background-color: #929292 !important;
+}
 .btn-exit {
 	position: absolute;
 	top: 20px;

@@ -5,12 +5,13 @@ import { firebaseApp, userListRef } from '../firebase';
 class SignUp extends Component {
   constructor(props) {
     super(props);
-    const id = Math.random().toString(36).substr(2, 9);
+    // const id = Math.random().toString(36).substr(2, 9);
     this.state = {
       email: '',
       password: '',
       name: '',
-      id: id,
+      rights: 'Гость',
+      avatar: 'unknown-user.svg',
       error: {
         message: ''
       }
@@ -19,13 +20,13 @@ class SignUp extends Component {
 
   signUp() {
     console.log('this state', this.state);
-    const { email, password, name, id } = this.state;
+    const { email, password, name, rights, avatar } = this.state;
     firebaseApp.auth().createUserWithEmailAndPassword(email, password)
       .catch(error => {
         this.setState({error});
       })
       .then(function() {
-        userListRef.push({email, name, id})
+        userListRef.push({email, name, rights, avatar})
       });
   }
 

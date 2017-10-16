@@ -72,3 +72,10 @@
 .status--done {
   color: #28a745;
 }
+.pagination {
+  color: #000;
+
+}
+.pagination a {
+  cursor: pointer;
+}

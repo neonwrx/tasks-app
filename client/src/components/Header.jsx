@@ -38,6 +38,9 @@ class Header extends Component {
             <NavItem className="block-task-complete">
               <NavLink className="nav-link task-complete" to={'/completedtasks'} activeStyle={{ fontWeight: 'bold' }}>Завершенные</NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink className="nav-link cabinet-link" to={'/cabinet'} style={{color: '#fff'}} activeStyle={{ fontWeight: 'bold' }}><i className="fa fa-user-o"></i></NavLink>
+            </NavItem>
           </Nav>
         </Navbar>
         <button

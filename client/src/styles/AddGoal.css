@@ -32,7 +32,7 @@ a:hover {
 .input-addgoal {
 	display: inline-block;
 }
-.form-inline .form-control {
+.form-inline .form-group-addgoal .form-control {
 	width: 250px;
 }
 .form-group-title {

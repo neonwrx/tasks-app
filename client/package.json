@@ -15,13 +15,15 @@
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.1.2",
     "react-dropzone-component": "^2.0.0",
+    "react-paginate": "^5.0.0",
     "react-redux": "^5.0.5",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.6",
     "reactstrap": "^4.8.0",
     "redux": "^3.6.0",
-    "superagent": "^3.6.0"
+    "superagent": "^3.6.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "react-scripts": "1.0.7"

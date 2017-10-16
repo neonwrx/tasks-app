@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {connect } from 'react-redux';
-import { setCompleted } from '../actions';
-import { completeGoalRef } from '../firebase';
+import { setCompleted, setUsers } from '../actions';
+import { completeGoalRef, userListRef } from '../firebase';
 import Header from './Header';
+import CompleteGoalItem from './CompleteGoalItem';
+import Pagination from './Pagination';
 import { Link } from 'react-router-dom';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap';
+import { Table } from 'reactstrap';
 
 class CompleteGoalList extends Component {
   static propTypes = {
@@ -15,10 +17,12 @@ class CompleteGoalList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modal2: false
+      goalslist: [],
+      pageOfItems: []
     }
-    this.toggleDelete = this.toggleDelete.bind(this);
-    this.goToPreviousPage = this.goToPreviousPage.bind(this)
+
+    this.goToPreviousPage = this.goToPreviousPage.bind(this);
+    this.onChangePage = this.onChangePage.bind(this);
   }
 
   goToPreviousPage(event) {
@@ -35,30 +39,28 @@ class CompleteGoalList extends Component {
         completeGoals.push({email, title, assigned, description, status, attached, message, created, category, serverKey})
       })
       this.props.setCompleted(completeGoals);
+      this.setState({goalslist: completeGoals.reverse()});
+    });
+    userListRef.on('value', snap => {
+      let users = [];
+      snap.forEach(user => {
+        const { email, name, avatar } = user.val();
+        users.push({ email, name, avatar });
+      })
+      this.props.setUsers(users);
     })
-  }
-
-  toggleDelete() {
-    this.setState({
-      modal2: !this.state.modal2
-    });
-  }
-
-  deleteTask() {
-    // const { serverKey } = this.props.completeGoal;
-    // console.log(serverKey);
-    // completeGoalRef.child(serverKey).remove();
-    this.setState({
-      modal2: !this.state.modal2
-    });
   }
 
   clearCompleted() {
     completeGoalRef.set([]);
   }
 
+  onChangePage(pageOfItems) {
+      // update state with new page of items
+      this.setState({pageOfItems: pageOfItems});
+  }
+
   render() {
-    // const { serverKey } = this.props.completeGoals;
     return (
       <div className="page page-taskcomplite">
         <Header />
@@ -80,70 +82,18 @@ class CompleteGoalList extends Component {
             </thead>
             <tbody>
               {
-                this.props.completeGoals.map((completeGoal, index) => {
-                  const { assigned, title, serverKey, email, created, status, category } = completeGoal;
+                this.state.pageOfItems.map((completeGoal, index) => {
                   return (
-                    <tr key={index} completeGoal={serverKey}>
-                      <td>
-                        {
-                          this.props.users
-                            .filter(user => user.email === assigned)
-                            .map((user, index) => {
-                              return(
-                                <span style={{width: 'auto'}} key={index}>
-                                  <img src={require('../../uploads/avatars/' + user.avatar)} alt="avatar" className="avatar" />
-                                </span>
-                              )
-                          })
-                        }
-                      </td>
-                      <td className="tasks__title">
-                        <Link to={`/completetasks/${serverKey}`}><strong style={{color: '#F86F71'}}>{title}</strong></Link>
-                      </td>
-                      <td>
-                        {
-                          this.props.users
-                            .filter(user => user.email === email)
-                            .map((user, index) => {
-                              return(
-                                <span key={index} style={{marginRight: '5px'}}>{user.name}</span>
-                              )
-                          })
-                        }
-                        <em style={{color: '#CB98ED'}}>{email}</em>
-                      </td>
-                      <td>{created}</td>
-                      <td>{status}</td>
-                      <td>{category}</td>
-                      <td className="tasks__edit">
-                        <Button
-                          color="danger"
-                          size="sm"
-                          style={{marginLeft: '5px'}}
-                          className="fa fa-times"
-                          onClick={this.toggleDelete}
-                        >
-                        </Button>
-                      </td>
-                      <Modal isOpen={this.state.modal2} toggle={this.toggleDelete} className={this.props.className}>
-                        <ModalHeader toggle={this.toggleDelete}>Удалить задачу?</ModalHeader>
-                        <ModalBody>
-                          <label>Нехер задачи удалять?</label>
-                        </ModalBody>
-                        <ModalFooter>
-                          {/* <Button color="primary" onClick={()=> this.deleteTask()}>Удалить</Button>{' '} */}
-                          <Button color="secondary" onClick={this.toggleDelete}>Отмена</Button>
-                        </ModalFooter>
-                      </Modal>
-                    </tr>
+                    <CompleteGoalItem key={index} completeGoal={completeGoal} />
                   )
                 })
               }
             </tbody>
           </Table>
+          <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
         </div>
         {(() => {
-          if (this.props.user.email === 'rolexxx91@gmail.com') {
+          if (this.props.user.rights === 'Администратор') {
             return (
               <button
                 style={{marginTop: '5px'}}
@@ -161,12 +111,11 @@ class CompleteGoalList extends Component {
 }
 
 function mapStateToProps(state) {
-  const { completeGoals, users, user } = state;
+  const { completeGoals, user } = state;
   return  {
     completeGoals,
-    users,
     user
   }
 }
 
-export default connect(mapStateToProps, { setCompleted })(CompleteGoalList);
+export default connect(mapStateToProps, { setCompleted, setUsers })(CompleteGoalList);

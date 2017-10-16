@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {connect } from 'react-redux';
-import PersonalTask from './PersonalTask';
+import GoalItem from './GoalItem';
 import Header from './Header';
 import { Link } from 'react-router-dom';
 import { Table } from 'reactstrap';
@@ -36,7 +36,7 @@ class TasksList extends Component {
               <tr>
                 <th></th>
                 <th className="tasks__title">Название</th>
-                <th>Создал</th>
+                <th>Создал(а)</th>
                 <th>Дата создания</th>
                 <th>Статус</th>
                 <th>Категория</th>
@@ -49,7 +49,8 @@ class TasksList extends Component {
                 .filter(goal => goal.assigned === email)
                 .map((goal, index) => {
                   return (
-                    <PersonalTask key={index} goal={goal} />
+                    // <PersonalTask key={index} goal={goal} />
+                    <GoalItem key={index} goal={goal} />
                   )
                 })
               }

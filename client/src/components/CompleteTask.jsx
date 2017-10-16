@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { completeGoalRef } from '../firebase';
+import { setGoal, setCompleted } from '../actions';
 import '../styles/Task.css';
 
 import Header from './Header';
@@ -22,16 +23,19 @@ class CompleteTask extends Component {
       modal2: false,
       dropdownOpen: false,
       dropdownCategoryOpen: false,
+      dropdownPriorityOpen: false,
       title: '',
       description: '',
       files: [],
       status: '',
+      priority: '',
       category: ''
     }
 
     this.toggleTitle = this.toggleTitle.bind(this);
     this.toggleDescr = this.toggleDescr.bind(this);
     this.toggleStatus = this.toggleStatus.bind(this);
+    this.togglePriority = this.togglePriority.bind(this);
     this.toggleCategory = this.toggleCategory.bind(this);
     this.assignStatus = this.assignStatus.bind(this);
     this.editDescription = this.editDescription.bind(this);
@@ -45,14 +49,24 @@ class CompleteTask extends Component {
 
   componentDidMount() {
     completeGoalRef.on('value', snap => {
+      let goals = [];
       snap.forEach(goal => {
-        const { title, description, attached, status, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, message, created, priority, category } = goal.val();
         const serverKey = goal.key;
-        if (serverKey === this.props.task.serverKey) {
-          this.setState({ title: title, description: description, attached: attached, status: status, category: category });
+        if (serverKey === this.props.paramsId) {
+          this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
         }
-      })
+        goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
+      });
+      this.props.setCompleted(goals);
     })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let task = nextProps.completeGoals.find(task => task.serverKey === this.props.paramsId);
+    this.props.setGoal(task);
+    const { title, description, attached, status, priority, category } = nextProps.task;
+    this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
   }
 
   toggleTitle() {
@@ -73,6 +87,12 @@ class CompleteTask extends Component {
     });
   }
 
+  togglePriority() {
+    this.setState({
+      dropdownPriorityOpen: !this.state.dropdownPriorityOpen
+    });
+  }
+
   toggleCategory() {
     this.setState({
       dropdownCategoryOpen: !this.state.dropdownCategoryOpen
@@ -82,6 +102,11 @@ class CompleteTask extends Component {
   assignStatus(event) {
     const { serverKey } = this.props.task;
     completeGoalRef.child(serverKey).update({status: event.target.value});
+  }
+
+  assignPriority(event) {
+    const { serverKey } = this.props.task;
+    completeGoalRef.child(serverKey).update({priority: event.target.value});
   }
 
   assignCategory(event) {
@@ -101,7 +126,7 @@ class CompleteTask extends Component {
     const { serverKey } = this.props.task;
     if (this.refs.descriptionInput) {
       completeGoalRef.child(serverKey).update({description: this.state.description});
-      console.log('what', this.state.description);
+      // console.log('what', this.state.description);
     }
     this.setState({
       modal2: !this.state.modal2
@@ -167,8 +192,8 @@ class CompleteTask extends Component {
   }
 
   render() {
-    const { name, email } = this.props.user;
-    const { title, description, attached } = this.props.task;
+    // const { name, email } = this.props.user;
+    const { title, description, attached, message } = this.props.task;
     // console.log('task', this.props.task.title);
     return(
       <div>
@@ -177,36 +202,56 @@ class CompleteTask extends Component {
           <div className="task-button-back">
             <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Закрыть</Link>
           </div>
-          <h4 style={{color: '#FFFFFF'}}>
+          {/* <h4 style={{color: '#FFFFFF'}}>
             Task for <span><em>{ name }</em></span><span> ({ email })</span>
-          </h4>
+          </h4> */}
           <br/>
-          <div className="block-Dropdown">
-            <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
-              <DropdownToggle
-                caret
-                outline
-                color="primary"
-                size="sm"
+          <div className="block-Dropdown-wrap">
+            <div className="block-Dropdown">
+              <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
+                <DropdownToggle
+                  caret
+                  outline
+                  color="primary"
+                  size="sm"
                 >
                   Статус
                 </DropdownToggle>
                 <DropdownMenu>
                   <DropdownItem value="Новое" onClick={(event) => this.assignStatus(event)}>Новое</DropdownItem>
+                  <DropdownItem value="Проверено" onClick={(event) => this.assignStatus(event)}>Проверено</DropdownItem>
+                  <DropdownItem value="На доработке" onClick={(event) => this.assignStatus(event)}>На доработке</DropdownItem>
                   <DropdownItem value="В работе" onClick={(event) => this.assignStatus(event)}>В работе</DropdownItem>
-                  <DropdownItem value="На проверке" onClick={(event) => this.assignStatus(event)}>На проверку</DropdownItem>
                   <DropdownItem value="Выполнено" onClick={(event) => this.assignStatus(event)}>Выполнено</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
               <span>{this.state.status}</span>
-          </div>
-          <div className="block-Dropdown">
-            <Dropdown isOpen={this.state.dropdownCategoryOpen} toggle={this.toggleCategory}>
-              <DropdownToggle
-                caret
-                outline
-                color="primary"
-                size="sm"
+            </div>
+            <div className="block-Dropdown">
+              <Dropdown isOpen={this.state.dropdownPriorityOpen} toggle={this.togglePriority}>
+                <DropdownToggle
+                  caret
+                  outline
+                  color="primary"
+                  size="sm"
+                >
+                  Приоритет
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem value="Обычный" onClick={(event) => this.assignPriority(event)}>Обычный</DropdownItem>
+                  <DropdownItem value="Низкий" onClick={(event) => this.assignPriority(event)}>Низкий</DropdownItem>
+                  <DropdownItem value="Высокий" onClick={(event) => this.assignPriority(event)}>Высокий</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              <span>{this.state.priority}</span>
+            </div>
+            <div className="block-Dropdown">
+              <Dropdown isOpen={this.state.dropdownCategoryOpen} toggle={this.toggleCategory}>
+                <DropdownToggle
+                  caret
+                  outline
+                  color="primary"
+                  size="sm"
                 >
                   Категория
                 </DropdownToggle>
@@ -216,6 +261,7 @@ class CompleteTask extends Component {
                 </DropdownMenu>
               </Dropdown>
               <span>{this.state.category}</span>
+            </div>
           </div>
           <hr/>
           <div>
@@ -258,9 +304,32 @@ class CompleteTask extends Component {
                 attached ?
                   attached.split(",").map((file, index) => {
                     return (
-                      <div key={index} style={{marginBottom: '5px'}} className="attachedFile">
+                      <div key={index} style={{marginBottom: '10px'}} className="attachedFile">
                         <a href={'/uploads/' + file} download>
-                          <img src={require('../images/icon_rar.svg')} alt=""/>
+                          {(() => {
+                            let ext = file.split('.').pop();
+                            switch (ext) {
+                              case 'zip':
+                                return <img src={require('../images/icon_zip.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'rar':
+                                return <img src={require('../images/icon_rar.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'gif':
+                                return <img src={require('../images/icon_gif.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'psd':
+                                return <img src={require('../images/icon_psd.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'png':
+                              case 'jpg':
+                                // return <img src={require(`../../../uploads/${file}`)} alt=""/>
+                                return <img src={'/uploads/' + file} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              default:
+                                return <img src={require('../images/icon_other.svg')} alt=""/>
+                            }
+                          })()}
                           <span>{file}</span>
                         </a>
                         <Button
@@ -292,6 +361,12 @@ class CompleteTask extends Component {
               </ul>
             </aside>*/}
           </section>
+          <hr/>
+          <div>
+            {message}
+            <br/>
+            {/* {name} изменил статус на "{this.state.status}" */}
+          </div>
           <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
             <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>
             <ModalBody>
@@ -338,14 +413,17 @@ class CompleteTask extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { completeGoals, user } = state;
+  const { completeGoals, user, task } = state;
   // console.log('op',task);
   // console.log('op',ownProps);
-  return{
+  console.log('op',completeGoals);
+  return {
+    paramsId: ownProps.match.params.id,
     completeGoals,
     user,
-    task: state.completeGoals.find(task => task.serverKey === ownProps.match.params.id)
+    task
+    // task: state.completeGoals.find(task => task.serverKey === ownProps.match.params.id)
   }
 }
 
-export default connect(mapStateToProps, null)(CompleteTask);
+export default connect(mapStateToProps, { setGoal, setCompleted })(CompleteTask);

@@ -1,0 +1,19 @@
+.wrap {
+  /*text-align: center;*/
+  width: 250px;
+  margin: 0 auto;
+}
+.image {
+  text-align: center;
+}
+.avatar-lg {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid #dadada;
+  margin-bottom: 5px;
+}
+.nulled {
+  padding: 0 !important;
+}

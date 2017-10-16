@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { goalRef, userListRef } from '../firebase';
 import { setGoals, setUsers } from '../actions';
 import GoalItem from './GoalItem';
+import Pagination from './Pagination';
 import { Button, Table, InputGroup, InputGroupButton, Input, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -27,7 +28,9 @@ class GoalList extends Component {
       status: '',
       pressed: false,
       orderBy: undefined,
-      orderAsc: false
+      orderAsc: false,
+      goalslist: [],
+      pageOfItems: []
     };
     this.handleChangeStart = this.handleChangeStart.bind(this);
     this.handleChangeEnd = this.handleChangeEnd.bind(this);
@@ -37,23 +40,26 @@ class GoalList extends Component {
     this.searchType1 = this.searchType1.bind(this);
     this.searchType2 = this.searchType2.bind(this);
     this.sortByStatus = this.sortByStatus.bind(this);
+    this.onChangePage = this.onChangePage.bind(this);
   }
 
   componentDidMount() {
     goalRef.on('value', snap => {
       let goals = [];
       snap.forEach(goal => {
-        const { creator, title, assigned, description, status, attached, message, created, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, message, created, priority, category } = goal.val();
         const serverKey = goal.key;
-        goals.push({ creator, title, assigned, description, status, attached, message, created, category, serverKey });
+        goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
       })
       this.props.setGoals(goals);
+      this.setState({goalslist: goals.reverse()});
+      // this.changePage();
     });
     userListRef.on('value', snap => {
       let users = [];
       snap.forEach(user => {
-        const { email, name, avatar } = user.val();
-        users.push({ email, name, avatar });
+        const { email, name, avatar, rights } = user.val();
+        users.push({ email, name, avatar, rights });
       })
       this.props.setUsers(users);
     })
@@ -70,8 +76,10 @@ class GoalList extends Component {
     } else if (index === 4) {
       return (this.state.orderAsc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status));
     } else if (index === 5) {
+      return (this.state.orderAsc ? a.priority.localeCompare(b.priority) : b.priority.localeCompare(a.priority));
+    } else if (index === 6) {
       return (this.state.orderAsc ? a.category.localeCompare(b.category) : b.category.localeCompare(a.category));
-    }
+    } else return a = b;
   }
 
   handleClick(index) {
@@ -131,7 +139,7 @@ class GoalList extends Component {
     this.setState({
       status: event.target.value,
       searchBy: 'status'
-    })
+    });
   }
 
   searchType1(event) {
@@ -142,14 +150,21 @@ class GoalList extends Component {
     this.setState({searchBy: 'creator', searchPlaceholder: 'Введите email автора'});
   }
 
+  onChangePage(pageOfItems) {
+      // update state with new page of items
+      this.setState({pageOfItems: pageOfItems});
+  }
+
   render() {
-    const headers = ["","Название","Создал","Дата создания","Статус","Категория","Действие"];
+    const headers = ["","Название","Создал(а)","Дата создания","Статус","Приоритет","Категория","Действие"];
     // console.log('this.props.goals', this.props.goals);
-    let goalslist = (this.state.orderBy === undefined) ? this.props.goals : this.props.goals.sort(this.sort.bind(this)),
+    let goalslist = (this.state.orderBy === undefined) ? this.state.pageOfItems : this.state.pageOfItems.sort(this.sort.bind(this)),
         searchString = this.state.searchString.trim().toLowerCase(),
         todaySearchString = this.state.todayString.trim().toLowerCase(),
         status = this.state.status.trim().toLowerCase(),
         searchBy = this.state.searchBy;
+
+    // goalslist = goalslist.slice(0, 10);
 
     if (searchBy === 'title') {
       if (searchString.length > 0) {
@@ -260,13 +275,6 @@ class GoalList extends Component {
                   return (<th className={classes} key={index} onClick={this.handleClick.bind(this, index)}>{header}</th>);
                 })
               }
-              {/* <th></th>
-              <th className="tasks__title">Название</th>
-              <th>Создал</th>
-              <th>Дата создания</th>
-              <th>Статус</th>
-              <th>Категория</th>
-              <th className="tasks__edit">Действие</th> */}
             </tr>
           </thead>
           <tbody>
@@ -279,6 +287,7 @@ class GoalList extends Component {
             }
           </tbody>
         </Table>
+        <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
       </div>
     )
   }

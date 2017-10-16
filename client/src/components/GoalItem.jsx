@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { goalRef, completeGoalRef } from '../firebase';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap';
 
 class GoalItem extends Component {
   constructor(props) {
@@ -86,14 +86,14 @@ class GoalItem extends Component {
 
   completeGoal() {
     const { email } = this.props.user;
-    const { assigned, category, created, creator, description, status, message, title, serverKey } = this.props.goal;
+    const { assigned, category, created, creator, description, status, priority, message, title, serverKey } = this.props.goal;
     goalRef.child(serverKey).remove();
-    completeGoalRef.push({email, assigned, category, created, creator, description, status, message, title});
+    completeGoalRef.push({email, assigned, category, created, creator, description, status, priority, message, title});
   }
 
   render() {
     // console.log('this.props.goal', this.props.goal);
-    const { creator, assigned, title, created, category, status, serverKey } = this.props.goal;
+    const { creator, assigned, title, created, category, priority, status, serverKey } = this.props.goal;
     return (
       <tr>
         <td>
@@ -140,7 +140,8 @@ class GoalItem extends Component {
           })()} */}
           {status}
         </td>
-        <td>{category}</td>
+        <td><Badge color={priority === 'Обычный' ? 'success' : (priority === 'Высокий' ? 'danger' : 'warning')} pill>{priority}</Badge></td>
+        <td><Badge color={category === 'На тест' ? 'primary' : 'info'}>{category}</Badge></td>
         <td className="tasks__edit">
           <ButtonDropdown tether isOpen={this.state.dropdownOpen} toggle={this.toggleAssigment}>
             <DropdownToggle
@@ -154,7 +155,7 @@ class GoalItem extends Component {
             <DropdownMenu>
               {
                 this.props.users
-                .filter(user => user.avatar)
+                .filter(user => user.rights !== 'Гость')
                 .map((user, index) => {
                   return (
                     <DropdownItem key={index} value={user.email} onClick={(event) => this.assignTask(event)}>

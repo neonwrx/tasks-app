@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { goalRef } from '../firebase';
+import { setGoal, setGoals } from '../actions';
 import '../styles/Task.css';
 
 import Header from './Header';
 const request = require('superagent');
-
-// import PersonalTask from './PersonalTask';
 
 class Task extends Component {
   static propTypes = {
@@ -24,16 +23,20 @@ class Task extends Component {
       modal2: false,
       dropdownOpen: false,
       dropdownCategoryOpen: false,
+      dropdownPriorityOpen: false,
       title: '',
       description: '',
       files: [],
       status: '',
+      attached: '',
+      priority: '',
       category: ''
     }
 
     this.toggleTitle = this.toggleTitle.bind(this);
     this.toggleDescr = this.toggleDescr.bind(this);
     this.toggleStatus = this.toggleStatus.bind(this);
+    this.togglePriority = this.togglePriority.bind(this);
     this.toggleCategory = this.toggleCategory.bind(this);
     this.assignStatus = this.assignStatus.bind(this);
     this.editDescription = this.editDescription.bind(this);
@@ -47,15 +50,46 @@ class Task extends Component {
 
   componentDidMount() {
     goalRef.on('value', snap => {
+      let goals = [];
       snap.forEach(goal => {
-        const { title, description, attached, status, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, message, created, priority, category } = goal.val();
         const serverKey = goal.key;
-        if (serverKey === this.props.task.serverKey) {
-          this.setState({ title: title, description: description, attached: attached, status: status, category: category });
+        if (serverKey === this.props.paramsId) {
+          this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
         }
-      })
-    })
+        goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
+      });
+      this.props.setGoals(goals);
+      // let task = this.props.goals.find(task => task.serverKey === this.props.paramsId);
+      // this.props.setGoal(task);
+      // const { title, description, attached, status, priority, category } = this.props.task;
+      // this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
+    });
   }
+
+  componentWillReceiveProps(nextProps) {
+    // console.log('nextProps', nextProps);
+    let task = nextProps.goals.find(task => task.serverKey === this.props.paramsId);
+    this.props.setGoal(task);
+    const { title, description, attached, status, priority, category } = nextProps.task;
+    this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
+  }
+
+  // componentDidMount() {
+  //   goalRef.on('value', snap => {
+  //     snap.forEach(goal => {
+  //       const { title, description, attached, status, priority, category } = goal.val();
+  //       const serverKey = goal.key;
+  //       if (serverKey === this.props.task.serverKey) {
+  //         this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
+  //       }
+  //     })
+  //     // let task = this.props.goals.find(task => task.serverKey === this.props.paramsId);
+  //     // this.props.setGoal(task);
+  //     // const { title, description, attached, status, priority, category } = this.props.task;
+  //     // this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
+  //   });
+  // }
 
   toggleTitle() {
     this.setState({
@@ -75,6 +109,12 @@ class Task extends Component {
     });
   }
 
+  togglePriority() {
+    this.setState({
+      dropdownPriorityOpen: !this.state.dropdownPriorityOpen
+    });
+  }
+
   toggleCategory() {
     this.setState({
       dropdownCategoryOpen: !this.state.dropdownCategoryOpen
@@ -84,6 +124,11 @@ class Task extends Component {
   assignStatus(event) {
     const { serverKey } = this.props.task;
     goalRef.child(serverKey).update({status: event.target.value});
+  }
+
+  assignPriority(event) {
+    const { serverKey } = this.props.task;
+    goalRef.child(serverKey).update({priority: event.target.value});
   }
 
   assignCategory(event) {
@@ -183,13 +228,14 @@ class Task extends Component {
             Task for <span><em>{ name }</em></span><span> ({ email })</span>
           </h4> */}
           <br/>
-          <div className="block-Dropdown">
-            <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
-              <DropdownToggle
-                caret
-                outline
-                color="primary"
-                size="sm"
+          <div className="block-Dropdown-wrap">
+            <div className="block-Dropdown">
+              <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleStatus}>
+                <DropdownToggle
+                  caret
+                  outline
+                  color="primary"
+                  size="sm"
                 >
                   Статус
                 </DropdownToggle>
@@ -202,14 +248,32 @@ class Task extends Component {
                 </DropdownMenu>
               </Dropdown>
               <span>{this.state.status}</span>
-          </div>
-          <div className="block-Dropdown">
-            <Dropdown isOpen={this.state.dropdownCategoryOpen} toggle={this.toggleCategory}>
-              <DropdownToggle
-                caret
-                outline
-                color="primary"
-                size="sm"
+            </div>
+            <div className="block-Dropdown">
+              <Dropdown isOpen={this.state.dropdownPriorityOpen} toggle={this.togglePriority}>
+                <DropdownToggle
+                  caret
+                  outline
+                  color="primary"
+                  size="sm"
+                >
+                  Приоритет
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem value="Обычный" onClick={(event) => this.assignPriority(event)}>Обычный</DropdownItem>
+                  <DropdownItem value="Низкий" onClick={(event) => this.assignPriority(event)}>Низкий</DropdownItem>
+                  <DropdownItem value="Высокий" onClick={(event) => this.assignPriority(event)}>Высокий</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              <span>{this.state.priority}</span>
+            </div>
+            <div className="block-Dropdown">
+              <Dropdown isOpen={this.state.dropdownCategoryOpen} toggle={this.toggleCategory}>
+                <DropdownToggle
+                  caret
+                  outline
+                  color="primary"
+                  size="sm"
                 >
                   Категория
                 </DropdownToggle>
@@ -219,6 +283,7 @@ class Task extends Component {
                 </DropdownMenu>
               </Dropdown>
               <span>{this.state.category}</span>
+            </div>
           </div>
           <hr/>
           <div>
@@ -251,7 +316,7 @@ class Task extends Component {
               >
               </Button>
             </div>
-            <div className="name-field"><pre>{description}</pre></div>
+            <div className="name-field"><pre>{ description }</pre></div>
           </FormGroup>
           <hr/>
           <div>
@@ -261,32 +326,32 @@ class Task extends Component {
                 attached ?
                   attached.split(",").map((file, index) => {
                     return (
-                      <div key={index} style={{marginBottom: '5px'}} className="attachedFile">
+                      <div key={index} style={{marginBottom: '10px'}} className="attachedFile">
                         <a href={'/uploads/' + file} download>
-                        {(() => {
-                          let ext = file.split('.').pop();
-                          switch (ext) {
-                            case 'zip':
-                              return <img src={require('../images/icon_zip.svg')} alt=""/>
-                              break; // eslint-disable-line no-unreachable
-                            case 'rar':
-                              return <img src={require('../images/icon_rar.svg')} alt=""/>
-                              break; // eslint-disable-line no-unreachable
-                            case 'gif':
-                              return <img src={require('../images/icon_gif.svg')} alt=""/>
-                              break; // eslint-disable-line no-unreachable
-                            case 'psd':
-                              return <img src={require('../images/icon_psd.svg')} alt=""/>
-                              break; // eslint-disable-line no-unreachable
-                            case 'png':
-                            case 'jpg':
-                              // return <img src={require(`../../../uploads/${file}`)} alt=""/>
-                              return <img src={'/uploads/' + file} alt=""/>
-                              break; // eslint-disable-line no-unreachable
-                            default:
-                              return <img src={require('../images/icon_other.svg')} alt=""/>
-                          }
-                        })()}
+                          {(() => {
+                            let ext = file.split('.').pop();
+                            switch (ext) {
+                              case 'zip':
+                                return <img src={require('../images/icon_zip.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'rar':
+                                return <img src={require('../images/icon_rar.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'gif':
+                                return <img src={require('../images/icon_gif.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'psd':
+                                return <img src={require('../images/icon_psd.svg')} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              case 'png':
+                              case 'jpg':
+                                // return <img src={require(`../../../uploads/${file}`)} alt=""/>
+                                return <img src={'/uploads/' + file} alt=""/>
+                                break; // eslint-disable-line no-unreachable
+                              default:
+                                return <img src={require('../images/icon_other.svg')} alt=""/>
+                            }
+                          })()}
                           <span>{file}</span>
                         </a>
                         <Button
@@ -370,14 +435,21 @@ class Task extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { goals, user } = state;
-  // console.log('op',task);
+  const { goals, user, task } = state;
   // console.log('op',ownProps);
-  return{
+  // if () {
+  //
+  // }
+  // const task = state.goals.find(task => task.serverKey === ownProps.match.params.id)
+  // console.log('task',task);
+  // console.log('goals',goals);
+  return {
+    paramsId: ownProps.match.params.id,
     goals,
     user,
-    task: state.goals.find(task => task.serverKey === ownProps.match.params.id)
+    task,
+    // task: state.goals.find(task => task.serverKey === ownProps.match.params.id)
   }
 }
 
-export default connect(mapStateToProps, null)(Task);
+export default connect(mapStateToProps, { setGoal, setGoals })(Task);

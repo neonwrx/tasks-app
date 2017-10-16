@@ -24,7 +24,7 @@ class AddGoal extends Component {
     const { title } = this.state;
     const { email, name } = this.props.user;
     if (this.refs.addInput.value) {
-      goalRef.push({creator: email, title, created: date.locale('ru').format('DD MMMM YYYY г. HH:mm'), assigned: '', status: 'Новое', category: '', message: `${name} создал задачу.`, description: '', attached: ''});
+      goalRef.push({creator: email, title, created: date.locale('ru').format('DD MMMM YYYY г. HH:mm'), assigned: '', status: 'Новое', priority: 'Обычный', category: '', message: `${name} создал(а) задачу.`, description: '', attached: ''});
       this.refs.addInput.value = '';
     }
   }
@@ -33,18 +33,18 @@ class AddGoal extends Component {
     return (
       <div className="form-inline form-addgoal">
         <div className="form-group form-group-addgoal">
-        <div className="form-group-title">Новое задание:</div>
-        <div className="input-addgoal" >
-          <input
-            type="text"
-            placeholder="Добавить задачу ..."
-            className="form-control"
-            style={{marginRight: '5px'}}
-            ref="addInput"
-            onChange={event => this.setState({title: event.target.value})}
-            onKeyPress={this._handleKeyPress}
-          />
-        </div>
+          <div className="form-group-title">Новое задание:</div>
+          <div className="input-addgoal" >
+            <input
+              type="text"
+              placeholder="Добавить задачу ..."
+              className="form-control"
+              style={{marginRight: '5px'}}
+              ref="addInput"
+              onChange={event => this.setState({title: event.target.value})}
+              onKeyPress={this._handleKeyPress}
+            />
+          </div>
           <button
             className="btn btn-success"
             type="button"
