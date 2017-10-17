@@ -17,3 +17,9 @@
 .nulled {
   padding: 0 !important;
 }
+.message {
+  color: #c00;
+  font-size: 12px;
+  font-style: italic;
+  transition:  1s all;
+}

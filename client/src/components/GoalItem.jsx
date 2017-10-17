@@ -122,7 +122,7 @@ class GoalItem extends Component {
                 )
             })
           }
-          <em style={{color: '#CB98ED'}}>{creator}</em>
+          {/* <em style={{color: '#CB98ED'}}>{creator}</em> */}
         </td>
         <td>{created}</td>
         <td className={status === 'Новое' ? 'status--new' : (status === 'Проверено' ? 'status--verified' : (status === 'На доработке' ? 'status--on-complection' : (status === 'В работе' ? 'status--work' : 'status--done')))}>

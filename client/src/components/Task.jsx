@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import Linkify from 'react-linkify';
 import { goalRef } from '../firebase';
 import { setGoal, setGoals } from '../actions';
 import '../styles/Task.css';
@@ -60,6 +61,7 @@ class Task extends Component {
         goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
       });
       this.props.setGoals(goals);
+      // console.log('goals', goals);
       // let task = this.props.goals.find(task => task.serverKey === this.props.paramsId);
       // this.props.setGoal(task);
       // const { title, description, attached, status, priority, category } = this.props.task;
@@ -122,8 +124,23 @@ class Task extends Component {
   }
 
   assignStatus(event) {
-    const { serverKey } = this.props.task;
-    goalRef.child(serverKey).update({status: event.target.value});
+    const { serverKey, message } = this.props.task;
+    const { name } = this.props.user;
+    let g = [];
+    if (message) {
+      message.split(",").map((messageStatus, index) => {
+        return (
+          g = [...g, messageStatus]
+        )
+      })
+    }
+    let newMessage = name + ' изменил статус на ' + event.target.value;
+    g = [...g, newMessage];
+    // acceptedFiles.map(f => {
+    //   return g = [...g, f.name];
+    // });
+    console.log('g', g);
+    goalRef.child(serverKey).update({status: event.target.value, message: g.toString()});
   }
 
   assignPriority(event) {
@@ -316,7 +333,8 @@ class Task extends Component {
               >
               </Button>
             </div>
-            <div className="name-field"><pre>{ description }</pre></div>
+            <div className="name-field"><pre><Linkify properties={{target: '_blank'}}>{ description }</Linkify></pre></div>
+            {/* <div>{ this.state.description }</div> */}
           </FormGroup>
           <hr/>
           <div>
@@ -385,7 +403,13 @@ class Task extends Component {
           </section>
           <hr/>
           <div>
-            {message}
+            {
+              message ? message.split(",").map((singleMessage, index) => {
+                return (
+                  <div key={index}>{singleMessage}</div>
+                )
+              }) : ''
+            }
             <br/>
             {/* {name} изменил статус на "{this.state.status}" */}
           </div>

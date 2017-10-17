@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import Linkify from 'react-linkify';
 import { completeGoalRef } from '../firebase';
 import { setGoal, setCompleted } from '../actions';
 import '../styles/Task.css';
@@ -294,7 +295,7 @@ class CompleteTask extends Component {
               >
               </Button>
             </div>
-            <div className="name-field"><pre>{ description }</pre></div>
+            <div className="name-field"><pre><Linkify properties={{target: '_blank'}}>{ description }</Linkify></pre></div>
           </FormGroup>
           <hr/>
           <div>

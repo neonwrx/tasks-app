@@ -2,18 +2,27 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from './Header';
 import { Input, Button } from 'reactstrap';
-import { userListRef } from '../firebase';
+import { setGoals, setCompleted } from '../actions';
+import { userListRef, goalRef, completeGoalRef } from '../firebase';
+import moment from 'moment';
+import 'moment/locale/ru';
 import '../styles/Cabinet.css';
 
 class Cabinet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: ''
+      name: '',
+      todayString: moment(new Date()).format('DD MMMM YYYY'),
+      totalUserTasks: 0,
+      todayUserTasks: 0,
+      message: ''
     }
   }
 
   componentDidMount() {
+    let totalUserTasks = 0;
+    let todayUserTasks = 0;
     userListRef.on('value', snap => {
       snap.forEach(goal => {
         const { name } = goal.val();
@@ -23,6 +32,30 @@ class Cabinet extends Component {
         }
       })
     });
+    goalRef.on('value', snap => {
+      let goals = [];
+      snap.forEach(goal => {
+        const { creator, title, assigned, description, status, attached, message, created, priority, category } = goal.val();
+        const serverKey = goal.key;
+        goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
+      })
+      this.props.setGoals(goals);
+      totalUserTasks = totalUserTasks + (this.props.goals.filter(goal => goal.assigned === this.props.user.email)).length;
+      todayUserTasks = todayUserTasks + (this.props.goals.filter(goal => goal.assigned === this.props.user.email && goal.created.match( this.state.todayString))).length;
+      this.setState({totalUserTasks: totalUserTasks, todayUserTasks: todayUserTasks});
+    });
+    completeGoalRef.on('value', snap => {
+      let completeGoals = [];
+      snap.forEach(completeGoal => {
+        const { email, title, assigned, description, status, attached, message, created, category } = completeGoal.val();
+        const serverKey = completeGoal.key;
+        completeGoals.push({email, title, assigned, description, status, attached, message, created, category, serverKey})
+      })
+      this.props.setCompleted(completeGoals);
+      totalUserTasks = totalUserTasks + (this.props.completeGoals.filter(goal => goal.assigned === this.props.user.email)).length;
+      todayUserTasks = todayUserTasks + (this.props.completeGoals.filter(goal => goal.assigned === this.props.user.email && goal.created.match( this.state.todayString))).length;
+      this.setState({totalUserTasks: totalUserTasks, todayUserTasks: todayUserTasks});
+    });
   }
 
   changeName() {
@@ -30,6 +63,19 @@ class Cabinet extends Component {
     const { serverKey } = this.props.user;
     if (this.input.value) {
       userListRef.child(serverKey).update({name: name});
+      this.setState({message: 'Изменения внесены'});
+      setTimeout(() => {
+        this.setState({
+          message: ''
+        });
+      }, 3000);
+    } else {
+      this.setState({message: 'Некорректное значение'});
+      setTimeout(() => {
+        this.setState({
+          message: ''
+        });
+      }, 3000);
     }
   }
 
@@ -50,7 +96,7 @@ class Cabinet extends Component {
             <div style={{marginBottom: '5px'}}>Email: {email}</div>
             <div className="form-inline">
               <div className="form-group nulled">
-                <span>Имя: </span>
+                <span>ФИО: </span>
                 <Input
                   style={{marginRight: '5px'}}
                   size="sm"
@@ -73,7 +119,10 @@ class Cabinet extends Component {
                 </Button>
               </div>
             </div>
+            <div className="message">{this.state.message}</div>
             <div>Права доступа: {rights}</div>
+            <div>Задач за сегодня: { this.state.todayUserTasks }</div>
+            <div>Задач за все время: { this.state.totalUserTasks }</div>
           </div>
         </div>
       </div>
@@ -82,10 +131,12 @@ class Cabinet extends Component {
 }
 
 function mapStateToProps(state) {
-  const { user } = state;
+  const { user, goals, completeGoals } = state;
   return {
-    user
+    user,
+    goals,
+    completeGoals
   }
 }
 
-export default connect(mapStateToProps, null)(Cabinet);
+export default connect(mapStateToProps, { setGoals, setCompleted })(Cabinet);
