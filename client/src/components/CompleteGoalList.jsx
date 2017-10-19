@@ -17,6 +17,7 @@ class CompleteGoalList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoad: false,
       goalslist: [],
       pageOfItems: []
     }
@@ -39,7 +40,7 @@ class CompleteGoalList extends Component {
         completeGoals.push({email, title, assigned, description, status, attached, message, created, category, serverKey})
       })
       this.props.setCompleted(completeGoals);
-      this.setState({goalslist: completeGoals.reverse()});
+      this.setState({goalslist: completeGoals.reverse(), isLoad: true});
     });
     userListRef.on('value', snap => {
       let users = [];
@@ -61,52 +62,60 @@ class CompleteGoalList extends Component {
   }
 
   render() {
-    return (
-      <div className="page page-taskcomplite">
-        <Header />
-        <div style={{margin: '60px 50px'}}>
-          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
-          <hr/>
-          <h4 style={{color: '#FFFFFF'}}>Завершенные задачи</h4>
-          <hr/>
-          <Table hover className="tasks" size="sm">
-            <thead>
-              <tr>
-                <th></th>
-                <th className="tasks__title">Название</th>
-                <th>Создал</th>
-                <th>Дата создания</th>
-                <th>Статус</th>
-                <th>Категория</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                this.state.pageOfItems.map((completeGoal, index) => {
-                  return (
-                    <CompleteGoalItem key={index} completeGoal={completeGoal} />
-                  )
-                })
-              }
-            </tbody>
-          </Table>
-          <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
+    if (this.state.isLoad) {
+      return (
+        <div className="page page-taskcomplite">
+          <Header />
+          <div style={{margin: '60px 50px'}}>
+            <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
+            <hr/>
+            <h4 style={{color: '#FFFFFF'}}>Завершенные задачи</h4>
+            <hr/>
+            <Table hover className="tasks" size="sm">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th className="tasks__title">Название</th>
+                  <th>Создал</th>
+                  <th>Дата создания</th>
+                  <th>Статус</th>
+                  <th>Категория</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  this.state.pageOfItems.map((completeGoal, index) => {
+                    return (
+                      <CompleteGoalItem key={index} completeGoal={completeGoal} />
+                    )
+                  })
+                }
+              </tbody>
+            </Table>
+            <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
+          </div>
+          {(() => {
+            if (this.props.user.rights === 'Администратор') {
+              return (
+                <button
+                  style={{marginTop: '5px'}}
+                  className="btn btn-primary"
+                  onClick={() => this.clearCompleted()}
+                >
+                  Очистить список
+                </button>
+              )
+            }
+          })()}
         </div>
-        {(() => {
-          if (this.props.user.rights === 'Администратор') {
-            return (
-              <button
-                style={{marginTop: '5px'}}
-                className="btn btn-primary"
-                onClick={() => this.clearCompleted()}
-              >
-                Очистить список
-              </button>
-            )
-          }
-        })()}
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div style={{textAlign: 'center'}}>
+          <i className="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+        </div>
+      )
+    }
   }
 }
 

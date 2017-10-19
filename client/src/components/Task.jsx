@@ -134,7 +134,7 @@ class Task extends Component {
         )
       })
     }
-    let newMessage = name + ' изменил статус на ' + event.target.value;
+    let newMessage = name + ' изменил статус на "' + event.target.value + '"';
     g = [...g, newMessage];
     // acceptedFiles.map(f => {
     //   return g = [...g, f.name];

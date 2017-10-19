@@ -16,6 +16,7 @@ class GoalList extends Component {
     super(props);
     moment.locale('ru');
     this.state = {
+      isLoad: false,
       searchString: '',
       searchBy: 'title',
       searchPlaceholder: 'Введите название',
@@ -27,14 +28,17 @@ class GoalList extends Component {
       todayString: moment(new Date()).format('DD MMMM YYYY'),
       status: '',
       pressed: false,
+      pressed2: false,
       orderBy: undefined,
       orderAsc: false,
       goalslist: [],
-      pageOfItems: []
+      pageOfItems: [],
+      dateSearchString: []
     };
     this.handleChangeStart = this.handleChangeStart.bind(this);
     this.handleChangeEnd = this.handleChangeEnd.bind(this);
     this.searchToday = this.searchToday.bind(this);
+    this.searchDates = this.searchDates.bind(this);
     this.toggleSearch = this.toggleSearch.bind(this);
     this.toggleStatus = this.toggleStatus.bind(this);
     this.searchType1 = this.searchType1.bind(this);
@@ -52,7 +56,7 @@ class GoalList extends Component {
         goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
       })
       this.props.setGoals(goals);
-      this.setState({goalslist: goals.reverse()});
+      this.setState({goalslist: goals.reverse(), isLoad: true});
       // this.changePage();
     });
     userListRef.on('value', snap => {
@@ -103,20 +107,23 @@ class GoalList extends Component {
 
   searchToday() {
     this.setState({searchBy: 'date', pressed: !this.state.pressed});
-    // console.log('this.state.endDate', this.state.endDate.format('LL'));
-    let startDate = moment(this.state.startDate);
-    let endDate = moment(this.state.endDate);
+    console.log('moment', moment().subtract(4, 'days').format('DD MMMM YYYY г. HH:mm'));
+    // console.log('startDate', startDate.subtract(1, 'days').format('LL').trim().toLowerCase());
+  }
+
+  searchDates() {
+    let startDate = this.state.startDate;
+    let v = startDate.clone();
+    let endDate = this.state.endDate;
     let count = startDate.from(endDate, true).substring(0,1);
     let dates = [startDate.format('DD MMMM YYYY')];
     for ( let i = 0; i < count; i++) {
-      dates.push(startDate.add(1, 'days').format('DD MMMM YYYY'));
+      dates.push(v.add(1, 'days').format('DD MMMM YYYY'));
+      this.setState({dateSearchString: dates});
     }
-    // dates = [...dates, [this.state.startDate.add(1, 'days').format('LL')]];
-    // dates.push(this.state.startDate.add(1, 'days').format('LL'));
+    this.setState({searchBy: 'date2', pressed2: !this.state.pressed2});
     console.log('dates', dates);
-    console.log('moment', moment().subtract(4, 'days').format('DD MMMM YYYY г. HH:mm'));
-    // console.log('startDate', startDate.format('LL').trim().toLowerCase());
-    // console.log('startDate', startDate.subtract(1, 'days').format('LL').trim().toLowerCase());
+    console.log('v', v);
   }
 
   handleChange(e) {
@@ -161,10 +168,9 @@ class GoalList extends Component {
     let goalslist = (this.state.orderBy === undefined) ? this.state.pageOfItems : this.state.pageOfItems.sort(this.sort.bind(this)),
         searchString = this.state.searchString.trim().toLowerCase(),
         todaySearchString = this.state.todayString.trim().toLowerCase(),
+        dateSearchString = this.state.dateSearchString,
         status = this.state.status.trim().toLowerCase(),
         searchBy = this.state.searchBy;
-
-    // goalslist = goalslist.slice(0, 10);
 
     if (searchBy === 'title') {
       if (searchString.length > 0) {
@@ -184,6 +190,16 @@ class GoalList extends Component {
           return goal.created.toLowerCase().match( todaySearchString );
         });
       }
+    } else if ((searchBy === 'date2') && this.state.pressed2) {
+      if (dateSearchString.length > 0) {
+        goalslist = goalslist.filter((goal) => {
+          for (var i = 0; i < dateSearchString.length; i++ ) {
+            if (goal.created.match(dateSearchString[i])) {
+              return true;
+            }
+          }
+        });
+      }
     } else if (searchBy === 'status') {
       if (status.length > 0) {
         goalslist = goalslist.filter((goal) => {
@@ -192,104 +208,123 @@ class GoalList extends Component {
       }
     }
 
-    return (
-      <div>
-        <div className="row" style={{marginBottom: '8px'}}>
-          <div className="col-lg-4 offset-lg-5">
-            <div className="datepicker">
-              <ButtonDropdown isOpen={this.state.statusDropdownOpen} toggle={this.toggleStatus} style={{marginRight: '10px'}}>
-                <DropdownToggle color="success" outline caret>
-                  Статус
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem value="Новое" onClick={(event) => this.sortByStatus(event)}>Новое</DropdownItem>
-                  <DropdownItem value="Проверено" onClick={(event) => this.sortByStatus(event)}>Проверено</DropdownItem>
-                  <DropdownItem value="На доработке" onClick={(event) => this.sortByStatus(event)}>На доработке</DropdownItem>
-                  <DropdownItem value="В работе" onClick={(event) => this.sortByStatus(event)}>В работе</DropdownItem>
-                  <DropdownItem value="Выполнено" onClick={(event) => this.sortByStatus(event)}>Выполнено</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem value="" onClick={(event) => this.sortByStatus(event)}>Все</DropdownItem>
-                </DropdownMenu>
-              </ButtonDropdown>
-              <div>
-                <Button
-                  className="day-button"
-                  outline
-                  color="info"
-                  onClick={this.searchToday}
-                  style={{background: `${this.state.pressed ? '#5bc0de' : 'none'}`, color: `${this.state.pressed ? '#fff' : '#5bc0de'}`}}
-                >
-                  За сегодня
-                </Button>
-              </div>
-              <DatePicker
-                selected={this.state.startDate}
-                selectsStart
-                startDate={this.state.startDate}
-                endDate={this.state.endDate}
-                onChange={this.handleChangeStart}
-                className="form-control"
-              />
-              -
-              <DatePicker
-                selected={this.state.endDate}
-                selectsEnd
-                startDate={this.state.startDate}
-                endDate={this.state.endDate}
-                onChange={this.handleChangeEnd}
-                className="form-control"
-              />
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <InputGroup>
-              <Input
-                value={this.state.searchString}
-                type="search"
-                className="form-control"
-                placeholder={this.state.searchPlaceholder}
-                onChange={this.handleChange.bind(this)}
-              />
-              <InputGroupButton>
-                <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleSearch}>
-                  <DropdownToggle caret outline color="info">
-                    Поиск по
+    if (this.state.isLoad) {
+      return (
+        <div>
+          <div className="row" style={{marginBottom: '8px'}}>
+            <div className="col-lg-4 offset-lg-5">
+              <div className="datepicker">
+                <ButtonDropdown isOpen={this.state.statusDropdownOpen} toggle={this.toggleStatus} style={{marginRight: '10px'}}>
+                  <DropdownToggle color="success" outline caret>
+                    Статус
                   </DropdownToggle>
-                  <DropdownMenu right>
-                    <DropdownItem onClick={(event) => this.searchType1(event)}>названию</DropdownItem>
-                    <DropdownItem onClick={(event) => this.searchType2(event)}>автору</DropdownItem>
+                  <DropdownMenu>
+                    <DropdownItem value="Новое" onClick={(event) => this.sortByStatus(event)}>Новое</DropdownItem>
+                    <DropdownItem value="Проверено" onClick={(event) => this.sortByStatus(event)}>Проверено</DropdownItem>
+                    <DropdownItem value="На доработке" onClick={(event) => this.sortByStatus(event)}>На доработке</DropdownItem>
+                    <DropdownItem value="В работе" onClick={(event) => this.sortByStatus(event)}>В работе</DropdownItem>
+                    <DropdownItem value="Выполнено" onClick={(event) => this.sortByStatus(event)}>Выполнено</DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem value="" onClick={(event) => this.sortByStatus(event)}>Все</DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>
-              </InputGroupButton>
-            </InputGroup>
+                <div>
+                  <Button
+                    className="day-button"
+                    outline
+                    color="info"
+                    onClick={this.searchToday}
+                    style={{background: `${this.state.pressed ? '#5bc0de' : 'none'}`, color: `${this.state.pressed ? '#fff' : '#5bc0de'}`}}
+                  >
+                    За сегодня
+                  </Button>
+                </div>
+                <DatePicker
+                  selected={this.state.startDate}
+                  selectsStart
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                  onChange={this.handleChangeStart}
+                  className="form-control"
+                />
+                -
+                <DatePicker
+                  selected={this.state.endDate}
+                  selectsEnd
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                  onChange={this.handleChangeEnd}
+                  className="form-control"
+                />
+                <div>
+                  <Button
+                    className="day-button"
+                    outline
+                    color="info"
+                    onClick={this.searchDates}
+                    style={{background: `${this.state.pressed2 ? '#5bc0de' : 'none'}`, color: `${this.state.pressed2 ? '#fff' : '#5bc0de'}`}}
+                  >
+                    Ок
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3">
+              <InputGroup>
+                <Input
+                  value={this.state.searchString}
+                  type="search"
+                  className="form-control"
+                  placeholder={this.state.searchPlaceholder}
+                  onChange={this.handleChange.bind(this)}
+                />
+                <InputGroupButton>
+                  <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleSearch}>
+                    <DropdownToggle caret outline color="info">
+                      Поиск по
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem onClick={(event) => this.searchType1(event)}>названию</DropdownItem>
+                      <DropdownItem onClick={(event) => this.searchType2(event)}>автору</DropdownItem>
+                    </DropdownMenu>
+                  </ButtonDropdown>
+                </InputGroupButton>
+              </InputGroup>
+            </div>
           </div>
-        </div>
-        <Table hover className="tasks" size="sm">
-          <thead>
-            <tr>
+          <Table hover className="tasks" size="sm">
+            <thead>
+              <tr>
+                {
+                  headers.map((header, index) => {
+                    const isSelected = (index === this.state.orderBy);
+                    const arrow = (isSelected ? (this.state.orderAsc ? "is--asc" : "is--desc") : "");
+                    const classes = `${isSelected ? `is--active ${arrow}` : ""}`
+                    return (<th className={classes} key={index} onClick={this.handleClick.bind(this, index)}>{header}</th>);
+                  })
+                }
+              </tr>
+            </thead>
+            <tbody>
               {
-                headers.map((header, index) => {
-                  const isSelected = (index === this.state.orderBy);
-                  const arrow = (isSelected ? (this.state.orderAsc ? "is--asc" : "is--desc") : "");
-                  const classes = `${isSelected ? `is--active ${arrow}` : ""}`
-                  return (<th className={classes} key={index} onClick={this.handleClick.bind(this, index)}>{header}</th>);
+                goalslist.map((goal, index) => {
+                  return (
+                    <GoalItem key={index} goal={goal} />
+                  )
                 })
               }
-            </tr>
-          </thead>
-          <tbody>
-            {
-              goalslist.map((goal, index) => {
-                return (
-                  <GoalItem key={index} goal={goal} />
-                )
-              })
-            }
-          </tbody>
-        </Table>
-        <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
-      </div>
-    )
+            </tbody>
+          </Table>
+          <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
+        </div>
+      )
+    } else {
+      return (
+        <div style={{textAlign: 'center'}}>
+          <i className="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+        </div>
+      )
+    }
   }
 }
 
