@@ -35,9 +35,9 @@ class CompleteGoalList extends Component {
     completeGoalRef.on('value', snap => {
       let completeGoals = [];
       snap.forEach(completeGoal => {
-        const { email, title, assigned, description, status, attached, message, created, category } = completeGoal.val();
+        const { email, title, assigned, description, status, attached, message, created, finished, category } = completeGoal.val();
         const serverKey = completeGoal.key;
-        completeGoals.push({email, title, assigned, description, status, attached, message, created, category, serverKey})
+        completeGoals.push({email, title, assigned, description, status, attached, message, created, finished, category, serverKey})
       })
       this.props.setCompleted(completeGoals);
       this.setState({goalslist: completeGoals.reverse(), isLoad: true});
@@ -62,60 +62,67 @@ class CompleteGoalList extends Component {
   }
 
   render() {
-    if (this.state.isLoad) {
-      return (
-        <div className="page page-taskcomplite">
-          <Header />
-          <div style={{margin: '60px 50px'}}>
-            <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
-            <hr/>
-            <h4 style={{color: '#FFFFFF'}}>Завершенные задачи</h4>
-            <hr/>
-            <Table hover className="tasks" size="sm">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th className="tasks__title">Название</th>
-                  <th>Создал</th>
-                  <th>Дата создания</th>
-                  <th>Статус</th>
-                  <th>Категория</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  this.state.pageOfItems.map((completeGoal, index) => {
-                    return (
-                      <CompleteGoalItem key={index} completeGoal={completeGoal} />
-                    )
-                  })
-                }
-              </tbody>
-            </Table>
-            <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
-          </div>
+    return (
+      <div className="page page-taskcomplite">
+        <Header />
+        <div style={{margin: '60px 50px'}}>
+          <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
+          <hr/>
+          <h4 style={{color: '#FFFFFF'}}>Завершенные задачи</h4>
+          <hr/>
           {(() => {
-            if (this.props.user.rights === 'Администратор') {
+            if (this.state.isLoad) {
               return (
-                <button
-                  style={{marginTop: '5px'}}
-                  className="btn btn-primary"
-                  onClick={() => this.clearCompleted()}
+                <div>
+                  <Table hover className="tasks" size="sm">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th className="tasks__title">Название</th>
+                        <th>Создал</th>
+                        <th>Дата создания</th>
+                        <th>Дата завершения</th>
+                        <th>Статус</th>
+                        <th>Категория</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        this.state.pageOfItems.map((completeGoal, index) => {
+                          return (
+                            <CompleteGoalItem key={index} completeGoal={completeGoal} />
+                          )
+                        })
+                      }
+                    </tbody>
+                  </Table>
+                  <Pagination items={this.state.goalslist} onChangePage={this.onChangePage} />
+                </div>
+              )
+            } else {
+              return (
+                <div style={{textAlign: 'center'}}>
+                  <i className="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                </div>
+              )
+            }
+          })()}
+        </div>
+        {(() => {
+          if (this.props.user.rights === 'Администратор') {
+            return (
+              <button
+                style={{marginTop: '5px'}}
+                className="btn btn-primary"
+                onClick={() => this.clearCompleted()}
                 >
                   Очистить список
                 </button>
               )
             }
-          })()}
-        </div>
-      )
-    } else {
-      return (
-        <div style={{textAlign: 'center'}}>
-          <i className="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
-        </div>
-      )
-    }
+        })()}
+      </div>
+    )
   }
 }
 

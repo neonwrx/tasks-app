@@ -28,7 +28,7 @@ class CompleteGoalItem extends Component {
   }
 
   render() {
-    const { assigned, title, serverKey, email, created, status, category } = this.props.completeGoal;
+    const { assigned, title, serverKey, email, created, finished, status, category } = this.props.completeGoal;
     return (
       <tr>
         <td>
@@ -57,9 +57,10 @@ class CompleteGoalItem extends Component {
                 )
             })
           }
-          <em style={{color: '#CB98ED'}}>{email}</em>
+          {/* <em style={{color: '#CB98ED'}}>{email}</em> */}
         </td>
         <td>{created}</td>
+        <td>{finished}</td>
         <td>{status}</td>
         <td>{category}</td>
         <td className="tasks__edit">

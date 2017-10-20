@@ -51,9 +51,9 @@ class GoalList extends Component {
     goalRef.on('value', snap => {
       let goals = [];
       snap.forEach(goal => {
-        const { creator, title, assigned, description, status, attached, message, created, priority, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, message, created, finished, priority, category } = goal.val();
         const serverKey = goal.key;
-        goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
+        goals.push({ creator, title, assigned, description, status, attached, message, created, finished, priority, category, serverKey });
       })
       this.props.setGoals(goals);
       this.setState({goalslist: goals.reverse(), isLoad: true});
@@ -115,15 +115,20 @@ class GoalList extends Component {
     let startDate = this.state.startDate;
     let v = startDate.clone();
     let endDate = this.state.endDate;
-    let count = startDate.from(endDate, true).substring(0,1);
+    let count = startDate.from(endDate, true).substring(0,2);
     let dates = [startDate.format('DD MMMM YYYY')];
-    for ( let i = 0; i < count; i++) {
+    (count === 'де') ? count = 1 : ((count === 'не') ? count = 0 : count);
+    for ( let i = 0; i < count; i++ ) {
       dates.push(v.add(1, 'days').format('DD MMMM YYYY'));
-      this.setState({dateSearchString: dates});
+      // this.setState({dateSearchString: dates});
     }
+    this.setState({dateSearchString: dates});
     this.setState({searchBy: 'date2', pressed2: !this.state.pressed2});
     console.log('dates', dates);
+    console.log('count', count);
     console.log('v', v);
+    // console.log('v1', moment(this.state.goalslist[this.state.goalslist.length - 1].created, "DD MMMM YYYY"));
+    // console.log('v2', moment("12 октября 2017 г. 12:45", "DD MMMM YYYY HH:mm"));
   }
 
   handleChange(e) {
@@ -195,9 +200,11 @@ class GoalList extends Component {
         goalslist = goalslist.filter((goal) => {
           for (var i = 0; i < dateSearchString.length; i++ ) {
             if (goal.created.match(dateSearchString[i])) {
+              console.log('tftf', goal);
               return true;
             }
           }
+          return false;
         });
       }
     } else if (searchBy === 'status') {
@@ -246,6 +253,8 @@ class GoalList extends Component {
                   endDate={this.state.endDate}
                   onChange={this.handleChangeStart}
                   className="form-control"
+                  minDate={moment(this.state.goalslist[this.state.goalslist.length - 1].created, "DD MMMM YYYY")}
+                  maxDate={moment()}
                 />
                 -
                 <DatePicker
@@ -255,6 +264,8 @@ class GoalList extends Component {
                   endDate={this.state.endDate}
                   onChange={this.handleChangeEnd}
                   className="form-control"
+                  minDate={moment(this.state.goalslist[this.state.goalslist.length - 1].created, "DD MMMM YYYY")}
+                  maxDate={moment()}
                 />
                 <div>
                   <Button

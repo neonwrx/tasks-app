@@ -8,6 +8,8 @@ import Linkify from 'react-linkify';
 import { goalRef } from '../firebase';
 import { setGoal, setGoals } from '../actions';
 import '../styles/Task.css';
+import moment from 'moment';
+import 'moment/locale/ru';
 
 import Header from './Header';
 const request = require('superagent');
@@ -31,7 +33,8 @@ class Task extends Component {
       status: '',
       attached: '',
       priority: '',
-      category: ''
+      category: '',
+      finished: ''
     }
 
     this.toggleTitle = this.toggleTitle.bind(this);
@@ -53,12 +56,12 @@ class Task extends Component {
     goalRef.on('value', snap => {
       let goals = [];
       snap.forEach(goal => {
-        const { creator, title, assigned, description, status, attached, message, created, priority, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, message, created, finished, priority, category } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.paramsId) {
-          this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
+          this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished });
         }
-        goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
+        goals.push({ creator, title, assigned, description, status, attached, message, created, finished, priority, category, serverKey });
       });
       this.props.setGoals(goals);
       // console.log('goals', goals);
@@ -73,8 +76,8 @@ class Task extends Component {
     // console.log('nextProps', nextProps);
     let task = nextProps.goals.find(task => task.serverKey === this.props.paramsId);
     this.props.setGoal(task);
-    const { title, description, attached, status, priority, category } = nextProps.task;
-    this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
+    const { title, description, attached, status, priority, category, finished } = nextProps.task;
+    this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished });
   }
 
   // componentDidMount() {
@@ -136,11 +139,11 @@ class Task extends Component {
     }
     let newMessage = name + ' изменил статус на "' + event.target.value + '"';
     g = [...g, newMessage];
-    // acceptedFiles.map(f => {
-    //   return g = [...g, f.name];
-    // });
-    console.log('g', g);
+    // console.log('g', g);
     goalRef.child(serverKey).update({status: event.target.value, message: g.toString()});
+    if (event.target.value === 'Выполнено') {
+      goalRef.child(serverKey).update({finished: moment(new Date()).format('DD MMMM YYYY г. HH:mm')});
+    }
   }
 
   assignPriority(event) {
@@ -411,7 +414,9 @@ class Task extends Component {
               }) : ''
             }
             <br/>
-            {/* {name} изменил статус на "{this.state.status}" */}
+            {
+              this.state.finished ? <div style={{color: '#cb98ed'}}>Выполнено {this.state.finished}</div> : ''
+            }
           </div>
           <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
             <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>

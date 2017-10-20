@@ -35,25 +35,25 @@ class Cabinet extends Component {
     goalRef.on('value', snap => {
       let goals = [];
       snap.forEach(goal => {
-        const { creator, title, assigned, description, status, attached, message, created, priority, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, message, created, finished, priority, category } = goal.val();
         const serverKey = goal.key;
-        goals.push({ creator, title, assigned, description, status, attached, message, created, priority, category, serverKey });
+        goals.push({ creator, title, assigned, description, status, attached, message, created, finished, priority, category, serverKey });
       })
       this.props.setGoals(goals);
       totalUserTasks = totalUserTasks + (this.props.goals.filter(goal => goal.assigned === this.props.user.email)).length;
-      todayUserTasks = todayUserTasks + (this.props.goals.filter(goal => goal.assigned === this.props.user.email && goal.created.match( this.state.todayString))).length;
+      todayUserTasks = todayUserTasks + (this.props.goals.filter(goal => goal.assigned === this.props.user.email && goal.finished.match( this.state.todayString))).length;
       this.setState({totalUserTasks: totalUserTasks, todayUserTasks: todayUserTasks});
     });
     completeGoalRef.on('value', snap => {
       let completeGoals = [];
       snap.forEach(completeGoal => {
-        const { email, title, assigned, description, status, attached, message, created, category } = completeGoal.val();
+        const { email, title, assigned, description, status, attached, message, created, finished, category } = completeGoal.val();
         const serverKey = completeGoal.key;
-        completeGoals.push({email, title, assigned, description, status, attached, message, created, category, serverKey})
+        completeGoals.push({email, title, assigned, description, status, attached, message, created, finished, category, serverKey})
       })
       this.props.setCompleted(completeGoals);
       totalUserTasks = totalUserTasks + (this.props.completeGoals.filter(goal => goal.assigned === this.props.user.email)).length;
-      todayUserTasks = todayUserTasks + (this.props.completeGoals.filter(goal => goal.assigned === this.props.user.email && goal.created.match( this.state.todayString))).length;
+      todayUserTasks = todayUserTasks + (this.props.completeGoals.filter(goal => goal.assigned === this.props.user.email && goal.finished.match( this.state.todayString))).length;
       this.setState({totalUserTasks: totalUserTasks, todayUserTasks: todayUserTasks});
     });
   }
@@ -123,6 +123,9 @@ class Cabinet extends Component {
             <div>Права доступа: {rights}</div>
             <div>Задач за сегодня: { this.state.todayUserTasks }</div>
             <div>Задач за все время: { this.state.totalUserTasks }</div>
+            <br/>
+            <div>Создано задач за неделю: </div>
+            <div>Создано задач за все время: { this.props.goals.length + this.props.completeGoals.length }</div>
           </div>
         </div>
       </div>
