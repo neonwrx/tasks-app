@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Badge } from 'reactstrap';
 import { completeGoalRef } from '../firebase';
 
 class CompleteGoalItem extends Component {
@@ -61,8 +61,10 @@ class CompleteGoalItem extends Component {
         </td>
         <td>{created}</td>
         <td>{finished}</td>
-        <td>{status}</td>
-        <td>{category}</td>
+        <td className={status === 'Новое' ? 'status--new' : (status === 'Проверено' ? 'status--verified' : (status === 'На доработке' ? 'status--on-complection' : (status === 'В работе' ? 'status--work' : 'status--done')))}>
+          {status}
+        </td>
+        <td><Badge color={category === 'На тест' ? 'primary' : 'info'}>{category}</Badge></td>
         <td className="tasks__edit">
           <Button
             color="danger"

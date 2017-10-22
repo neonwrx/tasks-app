@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from './Header';
-import { Input, Button } from 'reactstrap';
+import { Input, Button, InputGroup, InputGroupButton, InputGroupAddon } from 'reactstrap';
 import { setGoals, setCompleted } from '../actions';
 import { userListRef, goalRef, completeGoalRef } from '../firebase';
 import moment from 'moment';
@@ -85,20 +85,16 @@ class Cabinet extends Component {
     return (
       <div>
         <Header />
-        <br/>
-        <br/>
-        <br/>
         <div className="container">
           <div className="wrap">
             <div className="image">
               <img className="avatar-lg" src={require(`../../uploads/avatars/${avatar}`)} alt="" />
             </div>
             <div style={{marginBottom: '5px'}}>Email: {email}</div>
-            <div className="form-inline">
-              <div className="form-group nulled">
-                <span>ФИО: </span>
+            <div style={{marginBottom: '5px'}}>
+              <InputGroup>
+                <InputGroupAddon>ФИО:</InputGroupAddon>
                 <Input
-                  style={{marginRight: '5px'}}
                   size="sm"
                   className="form-control"
                   type="text"
@@ -108,16 +104,17 @@ class Cabinet extends Component {
                   value= {this.state.name}
                   onChange={event => this.setState({name: event.target.value})}
                 />
-                <Button
-                  outline
-                  className="fa fa-floppy-o"
-                  color="secondary"
-                  size="sm"
-                  style={{marginLeft: '5px'}}
-                  onClick={() => this.changeName()}
-                >
-                </Button>
-              </div>
+                <InputGroupButton>
+                  <Button
+                    outline
+                    className="fa fa-floppy-o"
+                    color="secondary"
+                    // size="sm"
+                    onClick={() => this.changeName()}
+                  >
+                  </Button>
+                </InputGroupButton>
+              </InputGroup>
             </div>
             <div className="message">{this.state.message}</div>
             <div>Права доступа: {rights}</div>

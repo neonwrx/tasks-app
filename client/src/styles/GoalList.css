@@ -79,3 +79,18 @@
 .pagination a {
   cursor: pointer;
 }
+@media screen and (max-width: 992px) {
+  .search {
+    margin-top: 5px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .datepicker {
+    display: none;
+  }
+}
+@media screen and (max-width: 575px) {
+  .caption {
+    display: none;
+  }
+}

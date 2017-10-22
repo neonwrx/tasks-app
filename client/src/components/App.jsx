@@ -12,14 +12,15 @@ class App extends Component {
     return (
       <div className="page">
         <Header />
-        <div style={{margin: '5px 20px'}}>
+        <div className="container-fluid">
           {/* <h3>Tasks Master</h3> */}
           <AddGoal />
-          <hr />
-          <h4 style={{color: '#FFFFFF'}}>Задания</h4>
-          <hr />
+          {/* <hr /> */}
+          {/* <h4 style={{color: '#FFFFFF'}}>Задания</h4> */}
+          {/* <hr /> */}
+          <br />
           <GoalList />
-          <hr />
+          {/* <hr /> */}
           {/* <TasksList />
             <hr /> */}
           {/* <h4 style={{color: '#FFFFFF'}}>Выполненные задачи</h4> */}

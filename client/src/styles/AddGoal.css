@@ -1,9 +1,9 @@
 a:hover {
 	text-decoration: none;
 }
-.form-addgoal {
+/*.form-addgoal {
 	margin-top: 60px;
-}
+}*/
 .form-inline .form-group {
 	display: block;
 }
@@ -62,4 +62,14 @@ a:hover {
 }
 .form-group-addgoal button:hover{
 	color: #3D4149;
+}
+@media screen and (max-width: 420px) {
+	.form-inline .form-group-addgoal .form-control {
+		width: 165px;
+	}
+}
+@media screen and (max-width: 480px) {
+	.form-group-addgoal {
+		margin-bottom: 0;
+	}
 }

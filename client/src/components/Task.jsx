@@ -240,13 +240,10 @@ class Task extends Component {
     return(
       <div>
         <Header />
-        <div className="block-task-container">
+        <div className="block-task-container container-fluid">
           <div className="task-button-back">
             <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Закрыть</Link>
           </div>
-          {/* <h4 style={{color: '#FFFFFF'}}>
-            Task for <span><em>{ name }</em></span><span> ({ email })</span>
-          </h4> */}
           <br/>
           <div className="block-Dropdown-wrap">
             <div className="block-Dropdown">

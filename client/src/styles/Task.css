@@ -1,6 +1,6 @@
 .block-task-container {
 	width: 90%;
-	margin: 70px auto;
+	margin: 0px auto;
 	-webkit-box-shadow: 9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
 	-moz-box-shadow:    9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
 	box-shadow:         9px 15px 13px 0px rgba(0, 0, 0, 0.14), inset 0px 0px 40px 0px rgba(255, 255, 255, 0.05);
@@ -187,4 +187,25 @@
 	-moz-transition: all 0.5s ease-in-out;
 	-webkit-transition: all 0.5s ease-in-out;
 	transition: all 0.5s ease-in-out;
+}
+@media screen and (max-width: 992px) {
+	.block-task-container {
+		width: 100%;
+	}
+	.block-Dropdown-wrap {
+		width: 100%;
+		-webkit-flex-wrap: wrap;
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+		justify-content: space-around;
+	}
+	.name-field {
+		width: 100%;
+	}
+	.block-Dropdown {
+		margin-bottom: 10px;
+	}
+	.dropzone div:first-child {
+		width: 100% !important;
+	}
 }

@@ -117,7 +117,7 @@ class GoalList extends Component {
     let endDate = this.state.endDate;
     let count = startDate.from(endDate, true).substring(0,2);
     let dates = [startDate.format('DD MMMM YYYY')];
-    (count === 'де') ? count = 1 : ((count === 'не') ? count = 0 : count);
+    (count === 'де') ? count = 1 : ((count === 'не') ? count = 0 : count); // eslint-disable-line
     for ( let i = 0; i < count; i++ ) {
       dates.push(v.add(1, 'days').format('DD MMMM YYYY'));
       // this.setState({dateSearchString: dates});
@@ -219,7 +219,10 @@ class GoalList extends Component {
       return (
         <div>
           <div className="row" style={{marginBottom: '8px'}}>
-            <div className="col-lg-4 offset-lg-5">
+            <div className="col-lg-2 col-sm-4 caption">
+              <h4 style={{color: '#FFFFFF'}}>Задания</h4>
+            </div>
+            <div className="col-lg-4 col-sm-8 offset-lg-3 buttons">
               <div className="datepicker">
                 <ButtonDropdown isOpen={this.state.statusDropdownOpen} toggle={this.toggleStatus} style={{marginRight: '10px'}}>
                   <DropdownToggle color="success" outline caret>
@@ -255,6 +258,7 @@ class GoalList extends Component {
                   className="form-control"
                   minDate={moment(this.state.goalslist[this.state.goalslist.length - 1].created, "DD MMMM YYYY")}
                   maxDate={moment()}
+                  disabled = {(this.state.pressed2) ? true : false}
                 />
                 -
                 <DatePicker
@@ -266,6 +270,7 @@ class GoalList extends Component {
                   className="form-control"
                   minDate={moment(this.state.goalslist[this.state.goalslist.length - 1].created, "DD MMMM YYYY")}
                   maxDate={moment()}
+                  disabled = {(this.state.pressed2) ? true : false}
                 />
                 <div>
                   <Button
@@ -280,7 +285,7 @@ class GoalList extends Component {
                 </div>
               </div>
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-3 search">
               <InputGroup>
                 <Input
                   value={this.state.searchString}
@@ -303,7 +308,7 @@ class GoalList extends Component {
               </InputGroup>
             </div>
           </div>
-          <Table hover className="tasks" size="sm">
+          <Table hover className="tasks" size="sm" responsive>
             <thead>
               <tr>
                 {
