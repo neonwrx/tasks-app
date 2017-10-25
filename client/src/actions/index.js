@@ -1,4 +1,4 @@
-import { SIGNED_IN, SET_GOALS, SET_GOAL, SET_COMPLETED, SET_USER_TASK, REGISTERED_USERS } from '../constants';
+import { SIGNED_IN, SET_GOALS, SET_GOAL, SET_COMPLETED, SET_USER_TASK, REGISTERED_USERS, SET_NOTIFICATION } from '../constants';
 
 export function logUser(currentUser) {
   const action = {
@@ -44,6 +44,15 @@ export function setUsers(users) {
   const action = {
     type: REGISTERED_USERS,
     users
+  }
+  return action;
+}
+
+export function setNotification(message, level) {
+  const action = {
+    type: SET_NOTIFICATION,
+    message,
+    level
   }
   return action;
 }

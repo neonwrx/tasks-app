@@ -1,10 +1,12 @@
 const express = require('express');
 const upload = require('express-fileupload');
-const http = require('http');
+// const http = require('http');
 
 const app = express();
 const port = process.env.PORT || 8000;
-http.Server(app).listen(port);
+// http.Server(app).listen(port);
+var http = require('http').Server(app).listen(port);
+var io = require('socket.io')(http);
 
 app.use(upload()); // configure middleware
 
@@ -48,4 +50,17 @@ app.post('/', function(req,res){
     res.send("No File selected !");
     res.end();
   };
-})
+});
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+
+  io.sockets.emit('notification', { message: 'Hello the world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});

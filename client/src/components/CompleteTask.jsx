@@ -364,7 +364,13 @@ class CompleteTask extends Component {
           </section>
           <hr/>
           <div>
-            {message}
+            {
+              message ? message.split(",").map((singleMessage, index) => {
+                return (
+                  <div key={index}>{singleMessage}</div>
+                )
+              }) : ''
+            }
             <br/>
             {/* {name} изменил статус на "{this.state.status}" */}
           </div>
@@ -417,7 +423,7 @@ const mapStateToProps = (state, ownProps) => {
   const { completeGoals, user, task } = state;
   // console.log('op',task);
   // console.log('op',ownProps);
-  console.log('op',completeGoals);
+  // console.log('op',completeGoals);
   return {
     paramsId: ownProps.match.params.id,
     completeGoals,

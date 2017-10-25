@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Badge } from 'reactstrap';
-import { completeGoalRef } from '../firebase';
+import { goalRef, completeGoalRef } from '../firebase';
 
 class CompleteGoalItem extends Component {
   constructor(props) {
@@ -17,6 +17,16 @@ class CompleteGoalItem extends Component {
     this.setState({
       modal2: !this.state.modal2
     });
+  }
+
+  returnGoal() {
+    if (this.props.user.rights === 'Администратор') {
+      const { email, assigned, attached, category, created, finished, description, status, priority, message, title, serverKey } = this.props.completeGoal;
+      completeGoalRef.child(serverKey).remove();
+      goalRef.push({ assigned, attached, category, created, finished, creator: email, description, status, priority, message, title});
+    } else {
+      alert('У вас нет прав для данной операции');
+    }
   }
 
   deleteTask() {
@@ -66,6 +76,15 @@ class CompleteGoalItem extends Component {
         </td>
         <td><Badge color={category === 'На тест' ? 'primary' : 'info'}>{category}</Badge></td>
         <td className="tasks__edit">
+          <Button
+            outline
+            color="warning"
+            size="sm"
+            style={{marginLeft: '5px'}}
+            className="fa fa-bomb"
+            onClick={() => this.returnGoal()}
+          >
+          </Button>
           <Button
             color="danger"
             size="sm"

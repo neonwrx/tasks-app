@@ -86,9 +86,9 @@ class PersonalTask extends Component {
 
   completeGoal() {
     const { email } = this.props.user;
-    const { assigned, category, created, creator, description, status, message, title, serverKey } = this.props.goal;
+    const { assigned, attached, category, created, creator, description, status, message, title, serverKey } = this.props.goal;
     goalRef.child(serverKey).remove();
-    completeGoalRef.push({email, assigned, category, created, creator, description, status, message, title});
+    completeGoalRef.push({email, assigned, attached, category, created, creator, description, status, message, title});
   }
 
   render() {

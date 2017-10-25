@@ -6,12 +6,14 @@ import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Linkify from 'react-linkify';
 import { goalRef } from '../firebase';
-import { setGoal, setGoals } from '../actions';
+import { setGoal, setGoals, setNotification } from '../actions';
 import '../styles/Task.css';
 import moment from 'moment';
 import 'moment/locale/ru';
+import NotificationSystem from 'react-notification-system';
 
 import Header from './Header';
+import Notification1 from './Notification1';
 const request = require('superagent');
 
 class Task extends Component {
@@ -56,20 +58,21 @@ class Task extends Component {
     goalRef.on('value', snap => {
       let goals = [];
       snap.forEach(goal => {
-        const { creator, title, assigned, description, status, attached, message, created, finished, priority, category } = goal.val();
+        const { creator, title, assigned, description, status, attached, message, created, finished, priority, category, notify } = goal.val();
         const serverKey = goal.key;
         if (serverKey === this.props.paramsId) {
-          this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished });
+          this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished, notify: notify });
         }
-        goals.push({ creator, title, assigned, description, status, attached, message, created, finished, priority, category, serverKey });
+        goals.push({ creator, title, assigned, description, status, attached, message, created, finished, priority, category, notify, serverKey });
       });
       this.props.setGoals(goals);
-      // console.log('goals', goals);
+      // console.log('this', this.refs.child);
       // let task = this.props.goals.find(task => task.serverKey === this.props.paramsId);
       // this.props.setGoal(task);
       // const { title, description, attached, status, priority, category } = this.props.task;
       // this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
     });
+    this.notificationSystem = this.refs.notificationSystem;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,6 +81,26 @@ class Task extends Component {
     this.props.setGoal(task);
     const { title, description, attached, status, priority, category, finished } = nextProps.task;
     this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished });
+
+    // const { message, level } = nextProps.notification;
+
+    if ((this.state.notify === true) && (this.props.user.email === this.state.notifyCreator)) {
+        // this.notificationSystem.addNotification({
+        //   message: 'Notification message',
+        //   level: 'success'
+        // });
+        this.refs.child.handleButtonClick();
+      // console.log('nextProps.task.notify', nextProps.task.notify)
+    }
+  }
+
+  _addNotification = (event) => {
+    event.preventDefault();
+    // this.props.setNotification('happy days', 'success');
+    const { serverKey } = this.props.task;
+    goalRef.child(serverKey).update({notify: true});
+    setTimeout(() => {goalRef.child(serverKey).update({notify: false});}, 2000);
+    this.setState({notifyCreator: this.props.user.email});
   }
 
   // componentDidMount() {
@@ -143,6 +166,7 @@ class Task extends Component {
     goalRef.child(serverKey).update({status: event.target.value, message: g.toString()});
     if (event.target.value === 'Выполнено') {
       goalRef.child(serverKey).update({finished: moment(new Date()).format('DD MMMM YYYY г. HH:mm')});
+      this.props.setNotification({notification: true});
     }
   }
 
@@ -415,6 +439,9 @@ class Task extends Component {
               this.state.finished ? <div style={{color: '#cb98ed'}}>Выполнено {this.state.finished}</div> : ''
             }
           </div>
+          <button onClick={this._addNotification}>Add notification</button>
+          <NotificationSystem ref="notificationSystem" />
+          <Notification1 ref="child" />
           <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
             <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>
             <ModalBody>
@@ -461,7 +488,7 @@ class Task extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { goals, user, task } = state;
+  const { goals, user, task, notification } = state;
   // console.log('op',ownProps);
   // if () {
   //
@@ -474,8 +501,9 @@ const mapStateToProps = (state, ownProps) => {
     goals,
     user,
     task,
+    notification
     // task: state.goals.find(task => task.serverKey === ownProps.match.params.id)
   }
 }
 
-export default connect(mapStateToProps, { setGoal, setGoals })(Task);
+export default connect(mapStateToProps, { setGoal, setGoals, setNotification })(Task);

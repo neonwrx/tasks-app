@@ -29,9 +29,9 @@
 	box-shadow:         6px 6px 7px 0px rgba(0, 0, 0, 0.14);
 }
 
-.navbar-light .navbar-toggler {
+/*.navbar-inverse .navbar-toggler {
 	border-color: rgba(255, 255, 255, 0.75);
-}
+}*/
 
 .header-menu {
 	display: -ms-flexbox;
@@ -86,7 +86,7 @@
 			.header-button-block a:hover {
 				color: #3D4149!important;
 			}
-			.navbar-light .navbar-nav .nav-link.active {
+			.navbar-inverse .navbar-nav .nav-link.active {
 				color: #FFFFFF!important;
 			}
 .header-button {

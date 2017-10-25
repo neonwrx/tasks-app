@@ -65,9 +65,9 @@ class CompleteGoalList extends Component {
     completeGoalRef.on('value', snap => {
       let completeGoals = [];
       snap.forEach(completeGoal => {
-        const { email, title, assigned, description, status, attached, message, created, finished, category } = completeGoal.val();
+        const { email, title, assigned, description, status, priority, attached, message, created, finished, category } = completeGoal.val();
         const serverKey = completeGoal.key;
-        completeGoals.push({email, title, assigned, description, status, attached, message, created, finished, category, serverKey})
+        completeGoals.push({email, title, assigned, description, status, priority, attached, message, created, finished, category, serverKey})
       })
       this.props.setCompleted(completeGoals);
       this.setState({goalslist: completeGoals.reverse(), isLoad: true});
@@ -237,8 +237,8 @@ class CompleteGoalList extends Component {
         <Header />
         <div className="container-fluid">
           <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Назад</Link>
-          {/* <hr/>
-          <h4 style={{color: '#FFFFFF'}}>Завершенные задачи</h4>
+          <hr/>
+          {/* <h4 style={{color: '#FFFFFF'}}>Завершенные задачи</h4>
           <hr/> */}
           {(() => {
             if (this.state.isLoad) {

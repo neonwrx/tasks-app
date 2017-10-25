@@ -7,6 +7,7 @@ import task from './reducer_goal';
 import completeGoals from './reducer_completed_goals';
 import userTasks from './reducer_usertasks';
 import users from './reducer_users';
+import notification from './reducer_notification';
 
 export default combineReducers({
   router: routerReducer,
@@ -15,5 +16,6 @@ export default combineReducers({
   task,
   completeGoals,
   userTasks,
-  users
+  users,
+  notification
 });
