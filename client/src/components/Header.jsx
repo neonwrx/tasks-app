@@ -1,21 +1,31 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand, Nav, NavItem, NavbarToggler, Collapse } from 'reactstrap';
+import { Navbar, NavbarBrand, Nav, NavItem, NavbarToggler, Collapse, Badge, Button } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { firebaseApp } from '../firebase';
+
+import MessageList from './MessageList';
 
 class Header extends Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.toggleMessageList = this.toggleMessageList.bind(this);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      showMessageList: false
     };
   }
 
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
+    });
+  }
+
+  toggleMessageList() {
+    this.setState({
+      showMessageList: !this.state.showMessageList
     });
   }
 
@@ -48,7 +58,19 @@ class Header extends Component {
           </Collapse>
             <div className="header-right">
               <div className="block-cabinet">
-                <NavLink className="nav-link cabinet-link" to={'/cabinet'} style={{color: '#fff'}} activeStyle={{ fontWeight: 'bold' }}><i className="fa fa-user-o"></i></NavLink>
+                <NavLink className="nav-link cabinet-link" to={'/cabinet'} style={{color: '#fff'}} activeStyle={{ fontWeight: 'bold' }}>
+                  <i className="fa fa-user-o"></i>
+                </NavLink>
+              </div>
+              <div className="block-cabinet">
+                <Button
+                  style={{color: '#fff'}}
+                  className="nav-link cabinet-link"
+                  outline
+                  onClick={this.toggleMessageList}
+                >
+                  <i className="fa fa-inbox"><div className="alert-msg"><Badge color="warning" pill>4</Badge></div></i>
+                </Button>
               </div>
 
               <button
@@ -59,7 +81,7 @@ class Header extends Component {
               </button>
             </div>
         </Navbar>
-
+        {this.state.showMessageList ? <MessageList/> : null}
       </div>
     )
   }

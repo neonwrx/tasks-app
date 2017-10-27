@@ -27,42 +27,42 @@ class SignIn extends Component {
   render() {
 
     return (
-      <div className="page">
-        <div className="title-block">Задачи RGK</div>
-        <div className="main-block" style={{width: '55%'}}>
+      <div className="page-enterpage">
+        <div className="title-block-enterpage">Задачи RGK</div>
+        <div className="main-block-enterpage offset-1 col-10 offset-sm-2 col-sm-8 offset-md-3 col-md-6 offset-lg-4 col-lg-4">
           <h2>Вход</h2>
-          <div className="form-inline">
-            <div className="form-group">
-              <div className="group-login">
-                <span>Логин:</span>
+          <div className="login-block-enterpage">
+            <div className="form-group row login-group-enterpage">
+              <label htmlFor="inputEmail3" className="col-sm-3 col-form-label login-name">Логин:</label>
+              <div className="offset-sm-1 col-sm-8 login-enterline">
                 <input
                   type="text"
                   style={{marginRight: '5px'}}
+                  id="inputEmail3"
                   className="form-control"
                   placeholder="email"
                   onChange={event => this.setState({email: event.target.value})}
                 />
               </div>
-              <div className="group-login">
-                <span>Пароль:</span>
+            </div>
+            <div className="form-group row login-group-enterpage">
+              <label htmlFor="inputPassword3" className="col-sm-3 col-form-label login-name">Пароль:</label>
+              <div className="offset-sm-1 col-sm-8 login-enterline">
                 <input
                   type="password"
                   style={{marginRight: '5px'}}
+                  id="inputPassword3"
                   className="form-control"
                   placeholder="password"
                   onChange={event => this.setState({password: event.target.value})}
                 />
               </div>
-              <div className="group-login">
-                <div className="registration"><Link to={'/signup'}>Регистрация</Link></div>
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => this.signIn()}
-                >
-                  Вход
-                </button>
-              </div>
+            </div>
+            <div className="enterpage-buttons">
+              <div className="registration"><Link to={'/signup'}>Регистрация</Link></div>
+              <button className="btn btn-primary button-enter" type="button" onClick={() => this.signIn()}>
+                Вход
+              </button>
             </div>
           </div>
           <div className="login_erron">{this.state.error.message}</div>

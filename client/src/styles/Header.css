@@ -176,6 +176,7 @@
 	  height: 32px;
 	  line-height: 30px;
 	  text-align: center;
+		position: relative;
 	}
 		.cabinet-link:hover {
 			background-color: #929292 !important;
@@ -204,4 +205,44 @@
 }
 .menu-btn {
 	right: 1.5rem;
+}
+
+.alert-msg {
+	position: absolute;
+  top: -5px;
+  right: -4px;
+  font-size: 12px;
+}
+
+.message-list {
+	position: absolute;
+	top: 90px;
+	right: 0;
+	background: #3d4149;
+	width: 400px;
+	/*height: 100%;*/
+	/*padding: 1rem 0;*/
+	z-index: 999;
+	border: 1px solid #8c8c8c;
+	border-right: none;
+	border-radius: 5px 0 0 5px;
+	box-shadow: -5px 3px 5px 0px rgba(50, 50, 50, 0.15);
+}
+
+.message-item {
+	cursor: pointer;
+	text-align: left;
+	padding: 1rem 0 1rem;
+	border-bottom: 1px solid #50555f;
+	border-radius: 5px 0 0 5px;
+}
+
+.message-item span {
+	font-size: 10px;
+  color: #5be4c5;
+  display: block;
+}
+
+.message-item:hover {
+	background-color: #373a42;
 }

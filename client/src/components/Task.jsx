@@ -14,6 +14,7 @@ import NotificationSystem from 'react-notification-system';
 
 import Header from './Header';
 import Notification1 from './Notification1';
+import alerts from '../alerts.json';
 const request = require('superagent');
 
 class Task extends Component {
@@ -101,6 +102,11 @@ class Task extends Component {
     goalRef.child(serverKey).update({notify: true});
     setTimeout(() => {goalRef.child(serverKey).update({notify: false});}, 2000);
     this.setState({notifyCreator: this.props.user.email});
+  }
+
+  messageForMe() {
+    let rand = alerts[Math.floor(Math.random() * alerts.length)];
+    alert(rand);
   }
 
   // componentDidMount() {
@@ -439,6 +445,7 @@ class Task extends Component {
               this.state.finished ? <div style={{color: '#cb98ed'}}>Выполнено {this.state.finished}</div> : ''
             }
           </div>
+          <button onClick={this.messageForMe.bind(this)}>Message</button>
           <button onClick={this._addNotification}>Add notification</button>
           <NotificationSystem ref="notificationSystem" />
           <Notification1 ref="child" />

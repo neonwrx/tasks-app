@@ -32,13 +32,13 @@ class SignUp extends Component {
 
   render() {
     return (
-      <div className="page">
-        <div className="title-block">Задачи RGK</div>
-        <div className="main-block" style={{width: '55%'}}>
+      <div className="page-enterpage">
+        <div className="title-block-enterpage">Задачи RGK</div>
+        <div className="main-block-enterpage offset-1 col-10 offset-sm-2 col-sm-8 offset-md-3 col-md-6 offset-lg-4 col-lg-4">
         <h2>Регистрация</h2>
-        <div className="form-inline">
-          <div className="form-group">
-            <div className="group-login group-reg">
+        <div className="form-inline login-block-enterpage">
+          <div className="form-group login-group-enterpage">
+            <div className="group-login login-enterline login-enterline-reg">
               <input
                 type="text"
                 style={{marginRight: '5px'}}
@@ -47,7 +47,7 @@ class SignUp extends Component {
                 onChange={event => this.setState({email: event.target.value})}
               />
             </div>
-            <div className="group-login group-reg">
+            <div className="group-login login-enterline login-enterline-reg">
               <input
                 type="password"
                 style={{marginRight: '5px'}}
@@ -56,7 +56,7 @@ class SignUp extends Component {
                 onChange={event => this.setState({password: event.target.value})}
               />
             </div>
-            <div className="group-login group-reg">
+            <div className="group-login login-enterline login-enterline-reg">
               <input
                 type="text"
                 style={{marginRight: '5px'}}
@@ -65,9 +65,9 @@ class SignUp extends Component {
                 onChange={event => this.setState({name: event.target.value})}
               />
             </div>
-            <div className="group-login group-reg">
+            <div className="group-login">
               <button
-                className="btn btn-primary registration"
+                className="btn btn-primary registration-confirm"
                 type="button"
                 onClick={() => this.signUp()}
               >
