@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Navbar, NavbarBrand, Nav, NavItem, NavbarToggler, Collapse, Badge, Button } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import { firebaseApp } from '../firebase';
+import { firebaseApp, userListRef } from '../firebase';
 
 import MessageList from './MessageList';
 
@@ -24,9 +25,11 @@ class Header extends Component {
   }
 
   toggleMessageList() {
+    const { serverKey } = this.props.user;
     this.setState({
       showMessageList: !this.state.showMessageList
     });
+    userListRef.child(serverKey).update({ unreadMessage: false})
   }
 
   signOut() {
@@ -34,6 +37,7 @@ class Header extends Component {
   }
 
   render() {
+    const { unreadMessage } = this.props.user;
     return (
       <div>
         <Navbar color="faded" inverse className="navbar-toggleable-md header-block">
@@ -57,8 +61,9 @@ class Header extends Component {
             </Nav>
           </Collapse>
             <div className="header-right">
-              <div className="block-cabinet">
-                <NavLink className="nav-link cabinet-link" to={'/cabinet'} style={{color: '#fff'}} activeStyle={{ fontWeight: 'bold' }}>
+              <div style={{width: '85px'}}>
+                <div className="block-cabinet">
+                  <NavLink className="nav-link cabinet-link" to={'/cabinet'} style={{color: '#fff'}} activeStyle={{ fontWeight: 'bold' }}>
                   <i className="fa fa-user-o"></i>
                 </NavLink>
               </div>
@@ -68,11 +73,11 @@ class Header extends Component {
                   className="nav-link cabinet-link"
                   outline
                   onClick={this.toggleMessageList}
-                >
-                  <i className="fa fa-inbox"><div className="alert-msg"><Badge color="warning" pill>4</Badge></div></i>
-                </Button>
+                  >
+                    <i className="fa fa-inbox"><div className="alert-msg">{unreadMessage ? <Badge color="warning" pill>1</Badge> : null}</div></i>
+                  </Button>
+                </div>
               </div>
-
               <button
                 className="btn btn-danger btn-exit"
                 onClick={() => this.signOut()}
@@ -81,10 +86,17 @@ class Header extends Component {
               </button>
             </div>
         </Navbar>
-        {this.state.showMessageList ? <MessageList/> : null}
+        {this.state.showMessageList ? <MessageList user={this.props.user}/> : null}
       </div>
     )
   }
 }
 
-export default Header;
+function mapStateToProps(state) {
+  const { user } = state;
+  return {
+    user
+  }
+}
+
+export default connect(mapStateToProps, null)(Header);

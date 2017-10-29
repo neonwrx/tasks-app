@@ -116,7 +116,7 @@ class Cabinet extends Component {
                 </InputGroupButton>
               </InputGroup>
             </div>
-            <div className="message">{this.state.message}</div>
+            <div className="message-alert">{this.state.message}</div>
             <div>Права доступа: {rights}</div>
             <div>Задач за сегодня: { this.state.todayUserTasks }</div>
             <div>Задач за все время: { this.state.totalUserTasks }</div>

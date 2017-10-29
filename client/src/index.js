@@ -40,7 +40,7 @@ firebaseApp.auth().onAuthStateChanged(user => {
     userListRef.on('value', snap => {
       let currentUser = {};
       snap.forEach(usr => {
-        const { email, name, avatar, rights } = usr.val();
+        const { email, name, avatar, rights, userMessage, unreadMessage } = usr.val();
         const serverKey = usr.key;
         if (email === logEmail) {
           // console.log('test', logEmail);
@@ -48,6 +48,8 @@ firebaseApp.auth().onAuthStateChanged(user => {
           currentUser.name = name;
           currentUser.avatar = avatar;
           currentUser.rights = rights;
+          currentUser.userMessage = userMessage;
+          currentUser.unreadMessage = unreadMessage;
           currentUser.serverKey = serverKey;
         }
       });

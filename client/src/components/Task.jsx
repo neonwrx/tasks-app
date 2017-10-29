@@ -5,15 +5,15 @@ import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Linkify from 'react-linkify';
-import { goalRef } from '../firebase';
-import { setGoal, setGoals, setNotification } from '../actions';
+import { goalRef, userListRef } from '../firebase';
+import { setGoal, setGoals, setUsers, setNotification } from '../actions';
 import '../styles/Task.css';
 import moment from 'moment';
 import 'moment/locale/ru';
-import NotificationSystem from 'react-notification-system';
+// import NotificationSystem from 'react-notification-system';
 
 import Header from './Header';
-import Notification1 from './Notification1';
+// import Notification1 from './Notification1';
 import alerts from '../alerts.json';
 const request = require('superagent');
 
@@ -67,13 +67,16 @@ class Task extends Component {
         goals.push({ creator, title, assigned, description, status, attached, message, created, finished, priority, category, notify, serverKey });
       });
       this.props.setGoals(goals);
-      // console.log('this', this.refs.child);
-      // let task = this.props.goals.find(task => task.serverKey === this.props.paramsId);
-      // this.props.setGoal(task);
-      // const { title, description, attached, status, priority, category } = this.props.task;
-      // this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
     });
-    this.notificationSystem = this.refs.notificationSystem;
+    userListRef.on('value', snap => {
+      let users = [];
+      snap.forEach(user => {
+        const serverKey = user.key;
+        // const { email, name, avatar, rights } = user.val();
+        users.push({ serverKey });
+      })
+      this.props.setUsers(users);
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -82,48 +85,21 @@ class Task extends Component {
     this.props.setGoal(task);
     const { title, description, attached, status, priority, category, finished } = nextProps.task;
     this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished });
-
-    // const { message, level } = nextProps.notification;
-
-    if ((this.state.notify === true) && (this.props.user.email === this.state.notifyCreator)) {
-        // this.notificationSystem.addNotification({
-        //   message: 'Notification message',
-        //   level: 'success'
-        // });
-        this.refs.child.handleButtonClick();
-      // console.log('nextProps.task.notify', nextProps.task.notify)
-    }
   }
 
-  _addNotification = (event) => {
-    event.preventDefault();
-    // this.props.setNotification('happy days', 'success');
-    const { serverKey } = this.props.task;
-    goalRef.child(serverKey).update({notify: true});
-    setTimeout(() => {goalRef.child(serverKey).update({notify: false});}, 2000);
-    this.setState({notifyCreator: this.props.user.email});
-  }
+  // _addNotification = (event) => {
+  //   event.preventDefault();
+  //   // this.props.setNotification('happy days', 'success');
+  //   const { serverKey } = this.props.task;
+  //   goalRef.child(serverKey).update({notify: true});
+  //   setTimeout(() => {goalRef.child(serverKey).update({notify: false});}, 2000);
+  //   this.setState({notifyCreator: this.props.user.email});
+  // }
 
   messageForMe() {
     let rand = alerts[Math.floor(Math.random() * alerts.length)];
     alert(rand);
   }
-
-  // componentDidMount() {
-  //   goalRef.on('value', snap => {
-  //     snap.forEach(goal => {
-  //       const { title, description, attached, status, priority, category } = goal.val();
-  //       const serverKey = goal.key;
-  //       if (serverKey === this.props.task.serverKey) {
-  //         this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
-  //       }
-  //     })
-  //     // let task = this.props.goals.find(task => task.serverKey === this.props.paramsId);
-  //     // this.props.setGoal(task);
-  //     // const { title, description, attached, status, priority, category } = this.props.task;
-  //     // this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category });
-  //   });
-  // }
 
   toggleTitle() {
     this.setState({
@@ -156,8 +132,8 @@ class Task extends Component {
   }
 
   assignStatus(event) {
-    const { serverKey, message } = this.props.task;
-    const { name } = this.props.user;
+    const { serverKey, message, title } = this.props.task;
+    const { name, userMessage } = this.props.user;
     let g = [];
     if (message) {
       message.split(",").map((messageStatus, index) => {
@@ -166,13 +142,28 @@ class Task extends Component {
         )
       })
     }
+    let m = [];
+    if (userMessage) {
+      userMessage.split(",").map((messageStatus, index) => {
+        return (
+          m = [...m, messageStatus]
+        )
+      })
+    }
     let newMessage = name + ' изменил статус на "' + event.target.value + '"';
+    let newMesssageListItem = name + ' завершил задачу «' + title + '» $#' + moment(new Date()).format('DD MMMM YYYY г. HH:mm') + '$#' + serverKey;
     g = [...g, newMessage];
+    m = [...m, newMesssageListItem];
     // console.log('g', g);
     goalRef.child(serverKey).update({status: event.target.value, message: g.toString()});
-    if (event.target.value === 'Выполнено') {
+    if ((event.target.value === 'Выполнено') && (this.state.status !== 'Выполнено')) {
       goalRef.child(serverKey).update({finished: moment(new Date()).format('DD MMMM YYYY г. HH:mm')});
-      this.props.setNotification({notification: true});
+      // this.props.setNotification({notification: true});
+      this.props.users.map((user,index) => {
+        return (
+          userListRef.child(user.serverKey).update({userMessage: m.toString(), unreadMessage: true})
+        );
+      });
     }
   }
 
@@ -445,10 +436,17 @@ class Task extends Component {
               this.state.finished ? <div style={{color: '#cb98ed'}}>Выполнено {this.state.finished}</div> : ''
             }
           </div>
-          <button onClick={this.messageForMe.bind(this)}>Message</button>
-          <button onClick={this._addNotification}>Add notification</button>
-          <NotificationSystem ref="notificationSystem" />
-          <Notification1 ref="child" />
+          <Button
+            color="secondary"
+            outline
+            onClick={this.messageForMe.bind(this)}
+          >
+            Message
+          </Button>
+          {/* <button onClick={this.messageForMe.bind(this)}>Message</button> */}
+          {/* <button onClick={this._addNotification}>Add notification</button> */}
+          {/* <NotificationSystem ref="notificationSystem" /> */}
+          {/* <Notification1 ref="child" /> */}
           <Modal isOpen={this.state.modal1} toggle={this.toggleTitle} className={this.props.className}>
             <ModalHeader toggle={this.toggleTitle}>Change task title</ModalHeader>
             <ModalBody>
@@ -495,7 +493,7 @@ class Task extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { goals, user, task, notification } = state;
+  const { goals, user, users, task, notification } = state;
   // console.log('op',ownProps);
   // if () {
   //
@@ -507,10 +505,11 @@ const mapStateToProps = (state, ownProps) => {
     paramsId: ownProps.match.params.id,
     goals,
     user,
+    users,
     task,
     notification
     // task: state.goals.find(task => task.serverKey === ownProps.match.params.id)
   }
 }
 
-export default connect(mapStateToProps, { setGoal, setGoals, setNotification })(Task);
+export default connect(mapStateToProps, { setGoal, setGoals, setUsers, setNotification })(Task);

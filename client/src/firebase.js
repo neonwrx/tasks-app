@@ -14,3 +14,4 @@ export const firebaseApp = firebase.initializeApp(config);
 export const userListRef = firebase.database().ref('userList');
 export const goalRef = firebase.database().ref('goals');
 export const completeGoalRef = firebase.database().ref('completeGoals');
+export const messageListRef = firebase.database().ref('messageList');

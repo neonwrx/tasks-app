@@ -17,7 +17,7 @@
 .nulled {
   padding: 0 !important;
 }
-.message {
+.message-alert {
   color: #c00;
   font-size: 12px;
   font-style: italic;
