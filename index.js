@@ -1,12 +1,14 @@
 const express = require('express');
 const upload = require('express-fileupload');
-// const http = require('http');
+const http = require('http');
 
 const app = express();
 const port = process.env.PORT || 8000;
-// http.Server(app).listen(port);
-var http = require('http').Server(app).listen(port);
-var io = require('socket.io')(http);
+const fs = require('fs');
+http.Server(app).listen(port);
+// const server = http.createServer(app).listen(port);
+// const server = http.Server(app).listen(port);
+// const io = require('socket.io')(server);
 
 app.use(upload()); // configure middleware
 
@@ -26,7 +28,7 @@ app.get('*', function (req, res) {
   res.sendFile(`${process.cwd()}/client/build/index.html`)
 });
 app.post('/', function(req,res){
-  console.log(req.files);
+  console.log('req.files', req.files);
   if(req.files){
     var obj = req.files;
     for(var key in obj) {
@@ -51,16 +53,33 @@ app.post('/', function(req,res){
     res.end();
   };
 });
-
-io.on('connection', function(socket){
-  console.log('a user connected');
-
-  io.sockets.emit('notification', { message: 'Hello the world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
+app.post('/del', function(req,res){
+  console.log('req.body',req.body);
+  var obj = req.body;
+  var filename = Object.keys(obj)[0];
+  var filePath = __dirname + '/client/uploads/' + filename;
+  // for(var key in obj) {
+  //   console.log('file',key);
+  // }
+  console.log(Object.keys(obj)[0]);
+  fs.unlinkSync(filePath);
 });
+
+const testFolder = __dirname + '/client/uploads/';
+fs.readdir(testFolder, (err, files) => {
+  files.forEach(file => {
+    if (file === 'Game SVMobi.rar')
+    console.log('Match',file);
+  });
+})
+
+// io.on('connection', function (socket) {
+//
+//   // io.sockets.emit('notification', { title: 'Hello the world' });
+//   // socket.on('my other event', function (data) {
+//   //   console.log(data);
+//   // });
+//   io.sockets.emit('notification', () => {
+//     console.log('user disconnected');
+//   });
+// });

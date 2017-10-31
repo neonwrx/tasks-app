@@ -117,7 +117,7 @@ class MessageList extends Component {
 
   render() {
     const { userMessage } = this.props.user;
-    if (userMessage.length) {
+    if ((userMessage.length) || (this.props.messages.length)) {
       return (
         <div className="message-list">
           <Nav tabs size="sm">

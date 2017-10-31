@@ -75,8 +75,9 @@ class CompleteGoalList extends Component {
     userListRef.on('value', snap => {
       let users = [];
       snap.forEach(user => {
-        const { email, name, avatar, rights } = user.val();
-        users.push({ email, name, avatar, rights });
+        const serverKey = user.key;
+        const { email, name, avatar, rights, userMessage, unreadMessage } = user.val();
+        users.push({ email, name, avatar, rights, userMessage, unreadMessage, serverKey });
       })
       this.props.setUsers(users);
     })

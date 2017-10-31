@@ -96,10 +96,10 @@ class Task extends Component {
   //   this.setState({notifyCreator: this.props.user.email});
   // }
 
-  messageForMe() {
-    let rand = alerts[Math.floor(Math.random() * alerts.length)];
-    alert(rand);
-  }
+  // messageForMe() {
+  //   let rand = alerts[Math.floor(Math.random() * alerts.length)];
+  //   alert(rand);
+  // }
 
   toggleTitle() {
     this.setState({
@@ -164,6 +164,8 @@ class Task extends Component {
           userListRef.child(user.serverKey).update({userMessage: m.toString(), unreadMessage: true})
         );
       });
+      let rand = alerts[Math.floor(Math.random() * alerts.length)];
+      alert(rand);
     }
   }
 
@@ -219,8 +221,14 @@ class Task extends Component {
       return arr;
     }
     removeA(g, file);
-    console.log('g', g);
+    // console.log('g', g);
     goalRef.child(serverKey).update({attached: g.toString()});
+    const req = request.post('/del');
+    req.attach(file, file);
+    req.end(function(err, resp) {
+      if (err) { console.error(err); }
+      return resp;
+    });
   }
 
   onDrop(acceptedFiles) {
@@ -228,6 +236,7 @@ class Task extends Component {
     this.setState({
       files: acceptedFiles
     });
+    console.log('acceptedFiles', acceptedFiles);
     const req = request.post('/');
       acceptedFiles.forEach(file => {
         req.attach(file.name, file);
@@ -436,13 +445,13 @@ class Task extends Component {
               this.state.finished ? <div style={{color: '#cb98ed'}}>Выполнено {this.state.finished}</div> : ''
             }
           </div>
-          <Button
+          {/* <Button
             color="secondary"
             outline
             onClick={this.messageForMe.bind(this)}
           >
             Message
-          </Button>
+          </Button> */}
           {/* <button onClick={this.messageForMe.bind(this)}>Message</button> */}
           {/* <button onClick={this._addNotification}>Add notification</button> */}
           {/* <NotificationSystem ref="notificationSystem" /> */}
