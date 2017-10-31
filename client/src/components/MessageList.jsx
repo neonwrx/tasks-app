@@ -189,7 +189,7 @@ class MessageList extends Component {
                     </Col>
                   </Row> */}
                   {
-                    this.props.messages.map((msg,index) => {
+                    this.props.messages.slice(-10,this.props.messages.length).map((msg,index) => {
                       return(
                         <Message key={index} msg={msg} />
                       )

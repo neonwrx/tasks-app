@@ -28,24 +28,55 @@ app.get('*', function (req, res) {
   res.sendFile(`${process.cwd()}/client/build/index.html`)
 });
 app.post('/', function(req,res){
-  console.log('req.files', req.files);
+  // console.log('req.files', req.files);
   if(req.files){
     var obj = req.files;
     for(var key in obj) {
-        var file = obj[key];
-        console.log('file:::', file.name);
-        var name = file.name;
-        var uploadpath = __dirname + '/client/uploads/' + name;
-        file.mv(uploadpath,function(err){
-          if(err){
-            console.log("File Upload Failed",name,err);
-            res.send("Error Occured!")
+      var file = obj[key];
+      console.log('file:::', file.name);
+      var name = file.name;
+      var dir = __dirname + '/client/uploads/';
+      var uploadpath = dir + name;
+      var copy = false;
+      var itemsProcessed = 0;
+
+      fs.readdir(dir, (err, files) => {
+        files.forEach(curfile => {
+          itemsProcessed++;
+          if (curfile === name) {
+            copy = true;
+            // console.log('copy',copy);
           }
-          else {
-            console.log("File Uploaded",name);
-            // res.send('Done! Uploading files')
+          if(itemsProcessed === files.length) {
+            callback();
           }
         });
+      });
+      // console.log('copy2',copy);
+      function callback () {
+        if (copy === true) {
+          // console.log('Match',name);
+          res.status(500);
+          res.write(name);
+          res.end()
+        } else {
+          file.mv(uploadpath,function(err){
+            if(err){
+              console.log("File Upload Failed",name,err);
+              res.send("Error Occured!")
+            }
+            else {
+              console.log("File Uploaded",name);
+              // res.status(500);
+              // res.write(name);
+              res.end()
+            }
+          });
+        }
+      }
+      // if (!fs.existsSync(dir)){
+      //   fs.mkdirSync(dir);
+      // }
     }
   }
   else {
@@ -58,20 +89,19 @@ app.post('/del', function(req,res){
   var obj = req.body;
   var filename = Object.keys(obj)[0];
   var filePath = __dirname + '/client/uploads/' + filename;
-  // for(var key in obj) {
-  //   console.log('file',key);
-  // }
-  console.log(Object.keys(obj)[0]);
+  var dir = __dirname + '/client/uploads/';
+  // console.log(Object.keys(obj)[0]);
   fs.unlinkSync(filePath);
+  // fs.readdir(dir, function(err, files) {
+  //   if (err) {
+  //      // some sort of error
+  //   } else {
+  //     if (!files.length) {
+  //       fs.rmdirSync(dir);
+  //     }
+  //   }
+  // });
 });
-
-const testFolder = __dirname + '/client/uploads/';
-fs.readdir(testFolder, (err, files) => {
-  files.forEach(file => {
-    if (file === 'Game SVMobi.rar')
-    console.log('Match',file);
-  });
-})
 
 // io.on('connection', function (socket) {
 //

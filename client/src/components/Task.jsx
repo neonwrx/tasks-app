@@ -238,29 +238,31 @@ class Task extends Component {
     });
     console.log('acceptedFiles', acceptedFiles);
     const req = request.post('/');
-      acceptedFiles.forEach(file => {
-        req.attach(file.name, file);
-        // this.setState({
-        //   files: [...this.state.files, file.name]
-        // });
-      });
-      req.end(function(err, resp) {
-        if (err) { console.error(err); }
-        return resp;
-      });
-    let g = [];
-    if (attached) {
-      attached.split(",").map((file, index) => {
-        return (
-          g = [...g, file]
-        )
-      })
-    }
-    acceptedFiles.map(f => {
-      return g = [...g, f.name];
+    acceptedFiles.forEach(file => {
+      req.attach(file.name, file);
     });
-    console.log('g', g);
-    goalRef.child(serverKey).update({attached: g.toString()});
+    req.end(function(err, resp) {
+      // if (err) { console.error(err); }
+      if (resp.statusCode === 200) {
+        console.log('resp',resp);
+        let g = [];
+        if (attached) {
+          attached.split(",").map((file, index) => {
+            return (
+              g = [...g, file]
+            )
+          })
+        }
+        acceptedFiles.map(f => {
+          return g = [...g, f.name];
+        });
+        console.log('g', g);
+        goalRef.child(serverKey).update({attached: g.toString()});
+      } else {
+        alert('Файл с именем "'+ resp.text +'" уже существует. Переименуйте его и попробуйте загрузить заново.');
+      }
+      return resp;
+    });
   }
 
   render() {
@@ -393,6 +395,7 @@ class Task extends Component {
                                 break; // eslint-disable-line no-unreachable
                               case 'png':
                               case 'jpg':
+                              case 'jpeg':
                                 // return <img src={require(`../../../uploads/${file}`)} alt=""/>
                                 return <img src={'/uploads/' + file} alt=""/>
                                 break; // eslint-disable-line no-unreachable
