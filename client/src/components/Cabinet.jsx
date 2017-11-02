@@ -14,8 +14,12 @@ class Cabinet extends Component {
     this.state = {
       name: '',
       todayString: moment(new Date()).format('DD MMMM YYYY'),
+      startDate: moment().subtract(6, 'days'),
+      endDate: moment(),
+      dateSearchString: [],
       totalUserTasks: 0,
       todayUserTasks: 0,
+      weeklyTasks: 0,
       message: ''
     }
   }
@@ -56,6 +60,20 @@ class Cabinet extends Component {
       todayUserTasks = todayUserTasks + (this.props.completeGoals.filter(goal => goal.assigned === this.props.user.email && goal.finished.match( this.state.todayString))).length;
       this.setState({totalUserTasks: totalUserTasks, todayUserTasks: todayUserTasks});
     });
+    this.searchDates();
+  }
+
+  searchDates() {
+    let startDate = this.state.startDate;
+    let v = startDate.clone();
+    let endDate = this.state.endDate;
+    let count = startDate.from(endDate, true).substring(0,2);
+    let dates = [startDate.format('DD MMMM YYYY')];
+    (count === 'де') ? count = 1 : ((count === 'не') ? count = 0 : count); // eslint-disable-line
+    for ( let i = 0; i < count; i++ ) {
+      dates.push(v.add(1, 'days').format('DD MMMM YYYY'));
+    }
+    this.setState({dateSearchString: dates});
   }
 
   changeName() {
@@ -81,6 +99,24 @@ class Cabinet extends Component {
 
   render() {
     const { email, avatar, rights } = this.props.user;
+    let weeklyTasks = this.props.goals.concat(this.props.completeGoals),
+        dateSearchString = this.state.dateSearchString;
+    let weeklyCreatedTasks = weeklyTasks.filter((task) => {
+      for (var i = 0; i < dateSearchString.length; i++ ) {
+        if (task.created.match(dateSearchString[i])) {
+          return true;
+        }
+      }
+      return false;
+    });
+    let weeklyFinishedTasks = weeklyTasks.filter((task) => {
+      for (var i = 0; i < dateSearchString.length; i++ ) {
+        if (task.finished.match(dateSearchString[i])) {
+          return true;
+        }
+      }
+      return false;
+    });
     // console.log(this.props.user);
     return (
       <div>
@@ -121,7 +157,8 @@ class Cabinet extends Component {
             <div>Задач за сегодня: { this.state.todayUserTasks }</div>
             <div>Задач за все время: { this.state.totalUserTasks }</div>
             <br/>
-            <div>Создано задач за неделю: </div>
+            <div>Создано задач за неделю: {weeklyCreatedTasks.length}</div>
+            <div>Завершено задач за неделю: {weeklyFinishedTasks.length}</div>
             <div>Создано задач за все время: { this.props.goals.length + this.props.completeGoals.length }</div>
           </div>
         </div>
