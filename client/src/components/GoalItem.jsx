@@ -99,13 +99,13 @@ class GoalItem extends Component {
         <td>
           {
             this.props.users
-              .filter(user => user.email === assigned)
-              .map((user, index) => {
-                return(
-                  <span style={{width: 'auto'}} key={index}>
-                    <img src={require('../../uploads/avatars/' + user.avatar)} alt="avatar" className="avatar" />
-                  </span>
-                )
+            .filter(user => user.email === assigned)
+            .map((user, index) => {
+              return(
+                <span style={{width: 'auto'}} key={index}>
+                  <img src={require('../../uploads/avatars/' + user.avatar)} alt="avatar" className="avatar" />
+                </span>
+              )
             })
           }
         </td>
@@ -115,29 +115,16 @@ class GoalItem extends Component {
         <td>
           {
             this.props.users
-              .filter(user => user.email === creator)
-              .map((user, index) => {
-                return(
-                  <span key={index} style={{marginRight: '5px'}}>{user.name}</span>
-                )
+            .filter(user => user.email === creator)
+            .map((user, index) => {
+              return(
+                <span key={index} style={{marginRight: '5px'}}>{user.name}</span>
+              )
             })
           }
-          {/* <em style={{color: '#CB98ED'}}>{creator}</em> */}
         </td>
         <td>{created}</td>
         <td className={status === 'Новое' ? 'status--new' : (status === 'Проверено' ? 'status--verified' : (status === 'На доработке' ? 'status--on-complection' : (status === 'В работе' ? 'status--work' : 'status--done')))}>
-          {/* {(() => {
-            if (this.state.changeStatus) {
-              return (
-                <span onClick={() => this.changeStatus()}>Changed</span>
-              )
-
-            } else {
-              return (
-                <span onClick={() => this.changeStatus()}>{status}</span>
-              )
-            }
-          })()} */}
           {status}
         </td>
         <td><Badge color={priority === 'Обычный' ? 'success' : (priority === 'Высокий' ? 'danger' : 'warning')} pill>{priority}</Badge></td>

@@ -12,6 +12,7 @@ class Header extends Component {
 
     this.toggle = this.toggle.bind(this);
     this.toggleMessageList = this.toggleMessageList.bind(this);
+    this.toggleTableOfColors = this.toggleTableOfColors.bind(this);
     this.state = {
       isOpen: false,
       showMessageList: false
@@ -30,6 +31,10 @@ class Header extends Component {
       showMessageList: !this.state.showMessageList
     });
     userListRef.child(serverKey).update({ unreadMessage: false})
+  }
+
+  toggleTableOfColors() {
+    alert('По этой ссылке скоро будет таблица с цветами');
   }
 
   signOut() {
@@ -61,22 +66,33 @@ class Header extends Component {
             </Nav>
           </Collapse>
             <div className="header-right">
-              <div style={{width: '85px'}}>
+              <div style={{width: '130px'}}>
+                <div className="block-cabinet">
+                  <Button
+                    style={{color: '#fff'}}
+                    className="nav-link cabinet-link"
+                    outline
+                    onClick={this.toggleTableOfColors}
+                  >
+                    <i className="fa fa-gift"><div className="alert-msg">{unreadMessage ? <Badge color="warning" pill>1</Badge> : null}</div></i>
+                  </Button>
+                </div>
                 <div className="block-cabinet">
                   <NavLink className="nav-link cabinet-link" to={'/cabinet'} style={{color: '#fff'}} activeStyle={{ fontWeight: 'bold' }}>
-                  <i className="fa fa-user-o"></i>
-                </NavLink>
-              </div>
-              <div className="block-cabinet">
-                <Button
-                  style={{color: '#fff'}}
-                  className="nav-link cabinet-link"
-                  outline
-                  onClick={this.toggleMessageList}
+                    <i className="fa fa-user-o"></i>
+                  </NavLink>
+                </div>
+                <div className="block-cabinet">
+                  <Button
+                    style={{color: '#fff'}}
+                    className="nav-link cabinet-link"
+                    outline
+                    onClick={this.toggleMessageList}
                   >
                     <i className="fa fa-inbox"><div className="alert-msg">{unreadMessage ? <Badge color="warning" pill>1</Badge> : null}</div></i>
                   </Button>
                 </div>
+
               </div>
               <button
                 className="btn btn-danger btn-exit"

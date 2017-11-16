@@ -22,8 +22,8 @@ class AddGoal extends Component {
   addGoal() {
     let date = moment();
     const { title } = this.state;
-    const { email, name } = this.props.user;
-    if (this.refs.addInput.value) {
+    const { email, name, rights } = this.props.user;
+    if (this.refs.addInput.value && rights !== 'Гость') {
       goalRef.push({creator: email, title, created: date.locale('ru').format('DD MMMM YYYY г. HH:mm'), finished: '', assigned: '', status: 'Новое', priority: 'Обычный', category: '', message: `${name} создал(а) задачу.`, description: '', attached: ''});
       this.refs.addInput.value = '';
     }

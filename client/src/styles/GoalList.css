@@ -73,11 +73,19 @@
   color: #28a745;
 }
 .pagination {
-  color: #000;
-
+  color: #cecece;
 }
 .pagination a {
   cursor: pointer;
+}
+.pagination .page-link, .page-item.disabled .page-link {
+  background-color: transparent;
+  border-color: #c3c3c3;
+}
+.pagination .page-item.active .page-link {
+  background-color: #b9b9b9;
+  border-color: #d4d4d4;
+  color: #000;
 }
 @media screen and (max-width: 992px) {
   .search {

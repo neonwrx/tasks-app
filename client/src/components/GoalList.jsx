@@ -324,11 +324,13 @@ class GoalList extends Component {
             </thead>
             <tbody>
               {
-                goalslist.map((goal, index) => {
-                  return (
-                    <GoalItem key={index} goal={goal} />
-                  )
-                })
+                (this.props.user.rights !== 'Гость') ?
+                  goalslist.map((goal, index) => {
+                    return (
+                      <GoalItem key={index} goal={goal} />
+                    )
+                  })
+                : (() => {return(<tr><div>У вас нет прав для просмотра данной информации</div></tr>)})()
               }
             </tbody>
           </Table>
@@ -346,10 +348,11 @@ class GoalList extends Component {
 }
 
 function mapStateToProps(state) {
-  const { goals, users } = state;
+  const { goals, users, user } = state;
   return {
     goals,
-    users
+    users,
+    user
   }
 }
 

@@ -46,6 +46,7 @@ a:hover {
 	-webkit-box-shadow: 4px 7px 6px 0px rgba(0, 0, 0, 0.14);
 	-moz-box-shadow:    4px 7px 6px 0px rgba(0, 0, 0, 0.14);
 	box-shadow:         4px 7px 6px 0px rgba(0, 0, 0, 0.14);
+	border: none;
 }
 .form-group-addgoal button{
 	color: #3D4149;

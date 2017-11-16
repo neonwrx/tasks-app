@@ -350,11 +350,13 @@ class CompleteGoalList extends Component {
                     </thead>
                     <tbody>
                       {
-                        goalslist.map((completeGoal, index) => {
-                          return (
-                            <CompleteGoalItem key={index} completeGoal={completeGoal} />
-                          )
-                        })
+                        (this.props.user.rights !== 'Гость') ?
+                          goalslist.map((completeGoal, index) => {
+                            return (
+                              <CompleteGoalItem key={index} completeGoal={completeGoal} />
+                            )
+                          })
+                        : (() => {return(<tr><div>У вас нет прав для просмотра данной информации</div></tr>)})()
                       }
                     </tbody>
                   </Table>

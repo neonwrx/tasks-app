@@ -25,6 +25,13 @@
 	font-weight: bold;
 	font-size: 14px;
 }
+.container-fluid .task-name-block h3 {
+	display: inline-block;
+	color: #FFFFFF;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+}
+
 .block-Dropdown-wrap {
 	width: 60%;
 	margin: 0 auto;

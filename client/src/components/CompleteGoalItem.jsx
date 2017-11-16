@@ -67,7 +67,6 @@ class CompleteGoalItem extends Component {
                 )
             })
           }
-          {/* <em style={{color: '#CB98ED'}}>{email}</em> */}
         </td>
         <td>{created}</td>
         <td>{finished}</td>

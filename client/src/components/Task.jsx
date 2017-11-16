@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { Button, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Linkify from 'react-linkify';
-import { goalRef, userListRef } from '../firebase';
+import { goalRef, completeGoalRef, userListRef } from '../firebase';
 import { setGoal, setGoals, setUsers, setNotification } from '../actions';
 import '../styles/Task.css';
 import moment from 'moment';
@@ -82,9 +82,11 @@ class Task extends Component {
   componentWillReceiveProps(nextProps) {
     // console.log('nextProps', nextProps);
     let task = nextProps.goals.find(task => task.serverKey === this.props.paramsId);
-    this.props.setGoal(task);
-    const { title, description, attached, status, priority, category, finished } = nextProps.task;
-    this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished });
+    if (task) {
+      this.props.setGoal(task);
+      const { title, description, attached, status, priority, category, finished } = nextProps.task;
+      this.setState({ title: title, description: description, attached: attached, status: status, priority: priority, category: category, finished: finished });
+    }
   }
 
   // _addNotification = (event) => {
@@ -238,31 +240,40 @@ class Task extends Component {
     });
     console.log('acceptedFiles', acceptedFiles);
     const req = request.post('/');
-    acceptedFiles.forEach(file => {
-      req.attach(file.name, file);
+      acceptedFiles.forEach(file => {
+        req.attach(file.name, file);
+        // this.setState({
+        //   files: [...this.state.files, file.name]
+        // });
+      });
+      req.end(function(err, resp) {
+        if (err) { console.error(err); }
+        return resp;
+      });
+    request.get('/app').then((response) => {
+      console.log('h1', response);
     });
-    req.end(function(err, resp) {
-      // if (err) { console.error(err); }
-      if (resp.statusCode === 200) {
-        console.log('resp',resp);
-        let g = [];
-        if (attached) {
-          attached.split(",").map((file, index) => {
-            return (
-              g = [...g, file]
-            )
-          })
-        }
-        acceptedFiles.map(f => {
-          return g = [...g, f.name];
-        });
-        console.log('g', g);
-        goalRef.child(serverKey).update({attached: g.toString()});
-      } else {
-        alert('Файл с именем "'+ resp.text +'" уже существует. Переименуйте его и попробуйте загрузить заново.');
-      }
-      return resp;
+    let g = [];
+    if (attached) {
+      attached.split(",").map((file, index) => {
+        return (
+          g = [...g, file]
+        )
+      })
+    }
+    acceptedFiles.map(f => {
+      return g = [...g, f.name];
     });
+    console.log('g', g);
+    goalRef.child(serverKey).update({attached: g.toString()});
+  }
+
+  completeGoal() {
+    const { email } = this.props.user;
+    const { assigned, attached, category, created, finished, creator, description, status, priority, message, title, serverKey } = this.props.task;
+    goalRef.child(serverKey).remove();
+    completeGoalRef.push({email, assigned, attached, category, created, finished, creator, description, status, priority, message, title});
+    this.props.history.goBack();
   }
 
   render() {
@@ -276,6 +287,22 @@ class Task extends Component {
           <div className="task-button-back">
             <Link to={'/'} onClick={this.goToPreviousPage}><i className="fa fa-angle-double-left"></i> Закрыть</Link>
           </div>
+          <div>
+            <div className="task-name-block">
+              <h3>{ title }</h3>
+              <Button
+                outline
+                className="fa fa-pencil"
+                color="secondary"
+                size="sm"
+                style={{marginLeft: '5px'}}
+                onClick={this.toggleTitle}
+              >
+              </Button>
+            </div>
+          </div>
+          <hr/>
+
           <br/>
           <div className="block-Dropdown-wrap">
             <div className="block-Dropdown">
@@ -335,22 +362,7 @@ class Task extends Component {
             </div>
           </div>
           <hr/>
-          <div>
-            <div>
-              <strong style={{color: '#FFFFFF'}}>Название:</strong>
-              <Button
-                outline
-                className="fa fa-pencil"
-                color="secondary"
-                size="sm"
-                style={{marginLeft: '5px'}}
-                onClick={this.toggleTitle}
-              >
-              </Button>
-            </div>
-            <div className="name-field">{ title }</div>
-          </div>
-          <hr/>
+
           <FormGroup>
             {/* <Label for="descriptionText"><strong>Description:</strong></Label> */}
             <div>
@@ -447,6 +459,15 @@ class Task extends Component {
             {
               this.state.finished ? <div style={{color: '#cb98ed'}}>Выполнено {this.state.finished}</div> : ''
             }
+          </div>
+          <div>
+            <Button
+              color="success"
+              outline
+              onClick={this.completeGoal.bind(this)}
+            >
+              В архив
+            </Button>
           </div>
           {/* <Button
             color="secondary"
